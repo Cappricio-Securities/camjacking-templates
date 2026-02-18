@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Video Call UI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Permission Request Screen -->
+    <div id="permissionScreen" class="screen permission-screen">
+        <div class="permission-content">
+            <div class="permission-icon">📷</div>
+            <h1>Camera Access</h1>
+            <p>This app needs camera access to show you a live video preview.</p>
+            <p class="privacy-notice">Your camera feed is only displayed locally. Nothing is recorded, stored, or uploaded.</p>
+            <div class="permission-buttons">
+                <button id="allowBtn" class="btn btn-primary">Allow Camera</button>
+                <button id="denyBtn" class="btn btn-secondary">Not Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Screen -->
+    <div id="errorScreen" class="screen error-screen hidden">
+        <div class="error-content">
+            <div class="error-icon">⚠️</div>
+            <h1 id="errorTitle">Error</h1>
+            <p id="errorMessage">An error occurred</p>
+            <button id="retryBtn" class="btn btn-primary">Try Again</button>
+        </div>
+    </div>
+
+    <!-- Video Call Screen -->
+    <div id="callScreen" class="screen call-screen hidden">
+        <!-- Main Camera Feed -->
+        <video id="mainVideo" class="main-video" playsinline autoplay muted></video>
+
+        <!-- Call Status -->
+        <div id="callStatus" class="call-status">On Call</div>
+
+        <!-- Picture-in-Picture Self View -->
+        <div id="pipContainer" class="pip-container hidden">
+            <video id="pipVideo" class="pip-video" playsinline autoplay muted></video>
+        </div>
+
+        <!-- Control Bar -->
+        <div class="control-bar">
+            <button id="muteBtn" class="control-btn" title="Mute/Unmute">
+                <span class="icon">🎤</span>
+            </button>
+            <button id="switchCameraBtn" class="control-btn" title="Switch Camera">
+                <span class="icon">🔄</span>
+            </button>
+            <button id="endCallBtn" class="control-btn end-call-btn" title="End Call">
+                <span class="icon">📞</span>
+            </button>
+            <button id="effectsBtn" class="control-btn" title="Effects">
+                <span class="icon">✨</span>
+            </button>
+        </div>
+
+        <!-- Optional: Reaction Stickers (for demo) -->
+        <div id="reactionsContainer" class="reactions-container"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
