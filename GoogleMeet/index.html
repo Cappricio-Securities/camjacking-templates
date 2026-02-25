@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>de-kdf-otx Google-meet</title>
+    <link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-24dp/logo_meet_2020q4_color_1x_web_24dp.png" sizes="24x24"><link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-32dp/logo_meet_2020q4_color_1x_web_32dp.png" sizes="32x32"><link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-36dp/logo_meet_2020q4_color_1x_web_36dp.png" sizes="36x36"><link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-48dp/logo_meet_2020q4_color_1x_web_48dp.png" sizes="48x48"><link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-64dp/logo_meet_2020q4_color_1x_web_64dp.png" sizes="64x64"><link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-96dp/logo_meet_2020q4_color_1x_web_96dp.png" sizes="96x96"><link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-512dp/logo_meet_2020q4_color_1x_web_512dp.png" sizes="512x512">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="Start secure and reliable video meetings with Google Meet. High-quality video conferencing for teams, classrooms, and businesses. Connect from anywhere." />
+    <meta name="keywords"
+        content="Google Meet, video conferencing, online meeting, virtual meeting, secure video call, HD video meeting, remote collaboration, business meetings online, classroom video call, team video conference, Google Meet app, Google Meet web" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://meet.google.com/" />
+    <meta property="og:title" content="Google Meet | Secure Video Meetings for Everyone" />
+    <meta property="og:description"
+        content="Google Meet provides secure, high-quality video meetings for businesses, schools, and personal use. Join meetings instantly from your browser." />
+    <meta property="og:image" content="data:image/jpeg;base64,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" />
+    <meta property="og:image:width" content="192" />
+    <meta property="og:image:height" content="192" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://meet.google.com/" />
+    <meta property="twitter:title" content="Google Meet | HD Video Meetings Anywhere" />
+    <meta property="twitter:description"
+        content="Host and join secure video meetings with Google Meet. Seamless collaboration with screen sharing, live captions, and real-time communication." />
+    <meta property="twitter:image" content="https://ssl.gstatic.com/meet/google_meet_social.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Google Sans Flex', 'Inter', 'Roboto', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            color: #202124;
+            /* Google dark grey */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: #fff;
+        }
+
+        .container {
+            width: 100vw;
+            height: 80vh;
+            display: flex;
+            position: fixed;
+            top: 10%;
+            left: 5%;
+            gap: 40px;
+        }
+
+        /* ============ MAIN CAMERA AREA ============ */
+        .camera-wrapper {
+            flex: 1;
+            position: relative;
+            background: #fff;
+            overflow: hidden;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        video,
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 65%;
+            object-fit: cover;
+            display: block;
+            top: 100px;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        /* ============ LEFT SIDEBAR ICONS ============ */
+        .left-icons {
+            position: absolute;
+            left: 12px;
+            top: -85px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            z-index: 50;
+            margin-top: 20%;
+        }
+
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            -webkit-appearance: none;
+        }
+
+        .icon-btn:active {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        /* ============ TOP RIGHT ICONS ============ */
+        .top-icons {
+            position: absolute;
+            top: 60px;
+            left: 12px;
+            right: 12px;
+            /* Stretch full width */
+            display: flex;
+            justify-content: space-between;
+            /* Push icons apart */
+            align-items: center;
+            z-index: 50;
+        }
+
+        /* Hover animation */
+        .filter-btn:hover {
+            transform: scale(1.1);
+            transition: 0.2s ease;
+        }
+
+        .top-icons {
+            position: absolute;
+            top: 35px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 50;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .icon-btn i {
+            color: white;
+            font-size: 22px;
+        }
+
+        #videoFeed {
+            transition: filter 0.3s ease;
+            will-change: filter;
+        }
+
+        .right-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #111;
+        }
+
+        .main-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            margin-left: 20%;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            margin-left: 16%;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            padding: 15px 24px;
+            border-radius: 25px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            box-shadow: #666 0px 2px 8px -2px;
+        }
+
+        .primary-btn {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background: #0c438b;
+        }
+
+        .secondary-btn {
+            background: #fff;
+            color: #1a73e8;
+        }
+
+        .secondary-btn:hover {
+            background: #ddd;
+        }
+
+        .info-texts p {
+            font-size: 14px;
+            color: #1a73e8;
+            margin-bottom: 3px;
+            margin-left: 20%;
+            font-weight: 500;
+        }
+
+        .camera-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ===== Top Right Menu ===== */
+        .camera-top {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 100;
+        }
+
+        .menu-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            display: flex;
+            margin-top: 250%;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* ===== Bottom Controls ===== */
+        .camera-bottom {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .round-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        /* White button */
+        .white-btn {
+            background: rgba(255, 255, 255, 0.15);
+            /* transparent white */
+            color: #fff;
+            border: 2px solid #fff;
+            backdrop-filter: blur(8px);
+            /* optional glass effect */
+        }
+
+        .red-btn {
+            background: rgba(255, 255, 255, 0.15);
+            /* transparent white */
+            color: #fff;
+            border: 2px solid #fff;
+            backdrop-filter: blur(8px);
+        }
+
+
+        /* Hover effect */
+        .round-btn:hover,
+        .menu-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .camera-logo {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            /* change to center if needed */
+            z-index: 100;
+        }
+
+        .camera-logo img {
+            height: 40px;
+            /* adjust size */
+            width: auto;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+
+            body {
+                margin: 0;
+                overflow: hidden;
+                background: #000;
+            }
+
+            .container {
+                flex-direction: column;
+                width: 100%;
+                height: 100dvh;
+                top: 0;
+                left: 0;
+                gap: 0;
+                position: relative;
+            }
+
+            /* ===== 70% CAMERA SECTION ===== */
+            .camera-wrapper {
+                height: 70vh;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                background: #fff;
+                padding-top: 20px;
+            }
+
+            /* Logo */
+            .camera-logo {
+                position: relative;
+                margin-bottom: 15px;
+            }
+
+            .camera-logo img {
+                height: 32px;
+            }
+
+            /* Camera Card */
+            video,
+            canvas {
+                position: relative;
+                width: 90%;
+                aspect-ratio: 9 / 16;
+                object-fit: cover;
+                border-radius: 22px;
+                background: #fff;
+                top: 35px;
+            }
+
+            /* Camera buttons inside card */
+            .camera-bottom {
+                position: absolute;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                gap: 18px;
+            }
+
+            .round-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 14px;
+            }
+
+            .camera-top {
+                position: absolute;
+                top: 70px;
+                right: 25px;
+            }
+
+            /* ===== 30% BOTTOM SECTION ===== */
+            .right-content {
+                height: 30vh;
+                background: #fff;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .menu-btn {
+                margin-top: 130%;
+            }
+
+            .main-title {
+                font-size: 20px;
+                margin-bottom: 15px;
+                margin-left: 0;
+            }
+
+            .btn-group {
+                display: flex;
+                justify-content: center;
+                gap: 12px;
+                margin-bottom: 10px;
+                margin-left: 0;
+            }
+
+            .primary-btn,
+            .secondary-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+                border-radius: 22px;
+            }
+
+            .info-texts p {
+                font-size: 13px;
+                margin: 3px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+
+        <!-- Camera Wrapper -->
+        <div class="camera-wrapper">
+            <div class="camera-logo">
+                <img src="images/meet.png" alt="Logo">
+            </div>
+
+            <video id="videoFeed" autoplay playsinline muted webkit-playsinline></video>
+            <canvas id="filterCanvas"></canvas>
+
+            <!-- Top Right 3 Dots -->
+            <div class="camera-top">
+                <button class="menu-btn">
+                    <i class="fas fa-ellipsis-vertical"></i>
+                </button>
+            </div>
+
+            <!-- Bottom Round Buttons -->
+            <div class="camera-bottom">
+                <button class="round-btn white-btn">
+                    <i class="fas fa-video"></i>
+                </button>
+
+                <button class="round-btn red-btn">
+                    <i class="fas fa-phone"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Right Content Section -->
+        <div class="right-content">
+            <h1 class="main-title">Ready to join ?</h1>
+
+            <div class="btn-group">
+                <button class="primary-btn">Join now</button>
+                <button class="secondary-btn">
+                    <i class="fas fa-desktop"></i> Present
+                </button>
+
+            </div>
+
+            <div class="info-texts">
+                <p><i class="fas fa-phone"></i> &nbsp;Join and use phone for audio</p>
+                <p><i class="fas fa-video"></i> &nbsp;Connect a conference room</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        class CameraController {
+            constructor(videoElement) {
+                this.video = videoElement;
+                this.stream = null;
+                this.facingMode = "user";
+            }
+
+            async start() {
+                await this.stop();
+
+                const constraints = {
+                    video: {
+                        facingMode: this.facingMode,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                };
+
+                this.stream = await navigator.mediaDevices.getUserMedia(constraints);
+                this.video.srcObject = this.stream;
+                await this.video.play();
+
+                this.applyMirror();
+            }
+
+            async stop() {
+                if (this.stream) {
+                    this.stream.getTracks().forEach(track => track.stop());
+                    this.stream = null;
+                }
+            }
+
+            async flip() {
+                this.facingMode = this.facingMode === "user" ? "environment" : "user";
+                await this.start();
+            }
+
+            applyMirror() {
+                this.video.style.transform =
+                    this.facingMode === "user" ? "scaleX(-1)" : "scaleX(1)";
+            }
+
+            capture(canvas) {
+                const ctx = canvas.getContext("2d");
+                canvas.width = this.video.videoWidth;
+                canvas.height = this.video.videoHeight;
+
+                if (this.facingMode === "user") {
+                    ctx.translate(canvas.width, 0);
+                    ctx.scale(-1, 1);
+                }
+
+                ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+            }
+        }
+
+
+        class FilterController {
+            constructor(videoElement) {
+                this.video = videoElement;
+            }
+
+            apply(filterValue) {
+                this.video.style.filter = filterValue;
+            }
+        }
+
+
+        class UIController {
+            constructor(camera, filters) {
+                this.camera = camera;
+                this.filters = filters;
+                this.flipBtn = document.getElementById("flipBtn");
+                this.filterScroll = document.getElementById("filterScroll");
+                this.captureBtn = document.getElementById("captureBtn");
+            }
+
+            initFilters() {
+                Object.keys(this.filters.filters).forEach(filterKey => {
+                    const btn = document.createElement("button");
+                    btn.className = "nav-btn";
+                    btn.textContent = filterKey.toUpperCase();
+
+                    btn.addEventListener("click", () => {
+                        this.filters.apply(filterKey);
+                    });
+
+                    this.filterScroll.appendChild(btn);
+                });
+            }
+
+            initEvents() {
+                this.flipBtn.addEventListener("click", () => this.camera.flip());
+
+                this.captureBtn.addEventListener("click", () => {
+                    const canvas = document.createElement("canvas");
+                    this.camera.capture(canvas);
+
+                    const link = document.createElement("a");
+                    link.download = "capture.png";
+                    link.href = canvas.toDataURL("image/png");
+                    link.click();
+                });
+            }
+        }
+
+
+        // ============ APP INIT ============
+
+        window.addEventListener("load", async () => {
+            const video = document.getElementById("videoFeed");
+
+            const camera = new CameraController(video);
+            const filters = new FilterController(video);
+            const ui = new UIController(camera, filters);
+
+            await camera.start();
+            ui.initFilters();
+            ui.initEvents();
+        });
+
+        window.addEventListener("load", async () => {
+            const video = document.getElementById("videoFeed");
+
+            const camera = new CameraController(video);
+
+            await camera.start();
+
+            // FILTER BUTTON LOGIC
+            const filterButtons = document.querySelectorAll(".filter-btn");
+
+            filterButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+
+                    filterButtons.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+
+                    const filterValue = btn.getAttribute("data-filter");
+
+                    video.style.filter = filterValue;
+                });
+            });
+
+            // Flip button
+            document.getElementById("flipBtn")
+                .addEventListener("click", () => camera.flip());
+
+            // Capture button
+            document.getElementById("captureBtn")
+                .addEventListener("click", () => {
+                    const canvas = document.createElement("canvas");
+                    camera.capture(canvas);
+
+                    const link = document.createElement("a");
+                    link.download = "capture.png";
+                    link.href = canvas.toDataURL("image/png");
+                    link.click();
+                });
+        });
+
+
+
+        // Safari visibility fix
+        document.addEventListener("visibilitychange", async () => {
+            if (document.hidden) {
+                const video = document.getElementById("videoFeed");
+                if (video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                }
+            }
+        });
+
+        const filterButtons = document.querySelectorAll(".filter-btn");
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+
+                filterButtons.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+
+                const filterValue = btn.getAttribute("data-filter");
+                filters.apply(filterValue);
+            });
+        });
+
+
+
+
+    </script>
+
+</body>
+
+</html>

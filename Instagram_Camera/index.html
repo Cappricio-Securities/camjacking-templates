@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Instagram</title>
+    <link data-default-icon="https://static.cdninstagram.com/rsrc.php/v4/yI/r/VsNE-OHk_8a.png" rel="icon"
+        sizes="192x192" href="https://static.cdninstagram.com/rsrc.php/v4/yI/r/VsNE-OHk_8a.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="Connect with friends, share photos and videos, and explore trending content on Instagram. Discover reels, stories, and creators worldwide." />
+    <meta name="keywords"
+        content="Instagram, photo sharing app, Instagram reels, Instagram stories, social media platform, share photos online, video sharing app, Instagram web, Instagram login" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.instagram.com/" />
+    <meta property="og:title" content="Instagram | Share Photos, Reels & Stories" />
+    <meta property="og:description"
+        content="Join Instagram to share your moments, explore trending reels, and connect with people around the world." />
+    <meta property="og:image" content="https://static.cdninstagram.com/rsrc.php/v4/yI/r/VsNE-OHk_8a.png" />
+    <meta property="og:image:width" content="192" />
+    <meta property="og:image:height" content="192" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://www.instagram.com/" />
+    <meta property="twitter:title" content="Instagram | Capture & Share the World" />
+    <meta property="twitter:description"
+        content="Create, share, and explore photos and short videos on Instagram. Follow creators and connect instantly." />
+    <meta property="twitter:image"
+        content="https://static.cdninstagram.com/rsrc.php/v4/yI/r/VsNE-OHk_8a.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: #000;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        /* ============ MAIN CAMERA AREA ============ */
+        .camera-wrapper {
+            flex: 1;
+            position: relative;
+            background: #000;
+            overflow: hidden;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        video,
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            top: 0;
+            left: 0;
+            border-radius: 15px;
+        }
+
+        /* ============ LEFT SIDEBAR ICONS ============ */
+        .left-icons {
+            position: absolute;
+            left: 12px;
+            top: -85px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            z-index: 50;
+            margin-top: 20%;
+        }
+
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            -webkit-appearance: none;
+        }
+
+        .icon-btn:active {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        /* ============ TOP RIGHT ICONS ============ */
+        .top-icons {
+            position: absolute;
+            top: 60px;
+            left: 12px;
+            right: 12px;
+            /* Stretch full width */
+            display: flex;
+            justify-content: space-between;
+            /* Push icons apart */
+            align-items: center;
+            z-index: 50;
+        }
+
+
+        /* ============ FILTER PREVIEW SECTION ============ */
+        .filter-preview-section {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 45;
+            padding: 12px 0;
+        }
+
+
+        .filter-scroll {
+            display: flex;
+            gap: 10px;
+            padding: 0 12px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-scroll::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .filter-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        .filter-preview {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .filter-preview canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .filter-preview.active {
+            border-color: white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+        }
+
+        .filter-label {
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 8px;
+            text-align: center;
+            padding: 2px;
+            pointer-events: none;
+        }
+
+        /* ============ BOTTOM NAVIGATION ============ */
+        .bottom-nav {
+            height: 75px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+            z-index: 50;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .gallery-btn {
+            width: 52px;
+            height: 52px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s;
+            -webkit-appearance: none;
+        }
+
+        .gallery-btn:active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.3s;
+            padding: 4px 8px;
+            -webkit-appearance: none;
+        }
+
+        .nav-btn.active {
+            color: white;
+        }
+
+        .nav-btn:active {
+            color: white;
+        }
+
+        .flip-btn {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s;
+            -webkit-appearance: none;
+        }
+
+        .flip-btn:active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ============ RESPONSIVE DESIGN ============ */
+        @media (max-width: 768px) {
+
+
+            .left-icons {
+                left: 10px;
+                top: 55px;
+                gap: 14px;
+            }
+
+            .icon-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .top-icons {
+                top: 55px;
+                right: 10px;
+                gap: 10px;
+            }
+
+            .bottom-nav {
+                height: 100px;
+                padding: 10px 12px;
+                padding-bottom: calc(12px + env(safe-area-inset-bottom));
+                gap: 10px;
+            }
+
+            .gallery-btn {
+                width: 48px;
+                height: 48px;
+            }
+
+            .nav-btn {
+                font-size: 11px;
+                padding: 2px 6px;
+            }
+
+            .flip-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 16px;
+            }
+
+            .filter-preview {
+                width: 60px;
+                height: 60px;
+            }
+
+            .filter-preview-section {
+                bottom: 105px;
+                padding: 10px 0;
+                left: 0;
+                right: 0;
+                transform: none;
+            }
+
+            .filter-scroll::-webkit-scrollbar {
+                display: none;
+            }
+
+            .filter-scroll {
+                gap: 8px;
+                padding: 0 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .left-icons {
+                left: 8px;
+                top: 50px;
+                gap: 12px;
+            }
+
+            .container {
+                padding-bottom: env(safe-area-inset-bottom);
+                height: 100dvh;
+            }
+
+            #ntg {
+                font-size: 25px !important;
+            }
+
+            .icon-btn {
+                width: 34px;
+                height: 84px;
+                font-size: 18px;
+                margin-top: -32px;
+            }
+
+            .top-icons {
+                top: 50px;
+                right: 8px;
+                gap: 8px;
+            }
+
+            .bottom-nav {
+                height: 95px;
+                padding: 8px 10px;
+                padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            }
+
+            .gallery-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+            }
+
+            .nav-btn {
+                font-size: 10px;
+                padding: 2px 5px;
+            }
+
+            .nav-center {
+                gap: 15px;
+            }
+
+            .flip-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+
+            .filter-preview {
+                width: 55px;
+                height: 55px;
+            }
+
+            .filter-label {
+                font-size: 7px;
+            }
+
+            .filter-preview-section {
+                bottom: 15px;
+                padding: 0px 0;
+            }
+
+            .filter-scroll {
+                gap: 6px;
+                padding: 0 8px;
+            }
+        }
+
+        .filter-scroll {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px;
+        }
+
+        .filter-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid white;
+            padding: 0;
+            overflow: hidden;
+            cursor: pointer;
+            flex-shrink: 0;
+            background: none;
+        }
+
+        .filter-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Preview Filters */
+        .bw {
+            filter: grayscale(100%);
+        }
+
+        .sepia {
+            filter: sepia(100%);
+        }
+
+        .blur {
+            filter: blur(2px);
+        }
+
+        .invert {
+            filter: invert(100%);
+        }
+
+        /* Hover animation */
+        .filter-btn:hover {
+            transform: scale(1.1);
+            transition: 0.2s ease;
+        }
+
+        .top-icons {
+            position: absolute;
+            top: 35px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 50;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .icon-btn i {
+            color: white;
+            font-size: 22px;
+        }
+
+        #videoFeed {
+            transition: filter 0.3s ease;
+            will-change: filter;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+
+        <!-- Camera Wrapper -->
+        <div class="camera-wrapper">
+            <video id="videoFeed" autoplay playsinline muted webkit-playsinline></video>
+            <canvas id="filterCanvas"></canvas>
+
+            <!-- Left Icons -->
+            <div class="left-icons">
+                <button class="icon-btn" title="Text">Aa</button>
+                <button class="icon-btn" id="ntg" title="Draw" style="font-size: 40px;">∞</button>
+                <button class="icon-btn" title="Stickers">
+                    <i class="fa-solid fa-border-all"></i>
+                </button>
+                <button class="icon-btn" title="Emoji">
+                    <i class="fa-regular fa-face-smile"></i>
+                </button>
+                <button class="icon-btn" title="Collapse">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+
+            </div>
+
+            <!-- Top Right Icons -->
+            <div class="top-icons">
+                <button class="icon-btn" title="Cancel">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <button class="icon-btn" title="Flash">
+                    <i class="fa-solid fa-bolt"></i>
+                </button>
+
+                <button class="icon-btn" title="Settings">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            </div>
+
+
+            <!-- Filter Preview Section -->
+            <div class="filter-preview-section">
+                <div class="filter-scroll" id="filterScroll">
+
+
+                    <button class="filter-btn" data-filter="none">
+                        <img src="images/image.png" alt="None">
+                    </button>
+
+                    <button class="filter-btn" data-filter="grayscale(100%)">
+                        <img src="images/img2.png" class="bw" alt="BW">
+                    </button>
+
+                    <button class="filter-btn" data-filter="sepia(100%)">
+                        <img src="images/img1.png" class="sepia" alt="Sepia">
+                    </button>
+
+                    <button class="filter-btn" data-filter="blur(3px)">
+                        <img src="images/image.png" class="blur" alt="Blur">
+                    </button>
+
+                    <button class="filter-btn" data-filter="invert(100%)">
+                        <img src="images/image.png" class="invert" alt="Invert">
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <button id="captureBtn" class="flip-btn">
+                <i class="fa-solid fa-camera" style="color: #fff;"></i>
+            </button>
+            <div class="nav-center">
+                <button class="nav-btn active" data-nav="post">Post</button>
+                <button class="nav-btn" data-nav="story">Story</button>
+                <button class="nav-btn" data-nav="reel">Reel</button>
+                <button class="nav-btn" data-nav="live">Live</button>
+            </div>
+            <button class="flip-btn" id="flipBtn" title="Flip Camera">
+                <i class="fa-solid fa-arrows-rotate" style="color: #fff;"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        class CameraController {
+            constructor(videoElement) {
+                this.video = videoElement;
+                this.stream = null;
+                this.facingMode = "user";
+            }
+
+            async start() {
+                await this.stop();
+
+                const constraints = {
+                    video: {
+                        facingMode: this.facingMode,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                };
+
+                this.stream = await navigator.mediaDevices.getUserMedia(constraints);
+                this.video.srcObject = this.stream;
+                await this.video.play();
+
+                this.applyMirror();
+            }
+
+            async stop() {
+                if (this.stream) {
+                    this.stream.getTracks().forEach(track => track.stop());
+                    this.stream = null;
+                }
+            }
+
+            async flip() {
+                this.facingMode = this.facingMode === "user" ? "environment" : "user";
+                await this.start();
+            }
+
+            applyMirror() {
+                this.video.style.transform =
+                    this.facingMode === "user" ? "scaleX(-1)" : "scaleX(1)";
+            }
+
+            capture(canvas) {
+                const ctx = canvas.getContext("2d");
+                canvas.width = this.video.videoWidth;
+                canvas.height = this.video.videoHeight;
+
+                if (this.facingMode === "user") {
+                    ctx.translate(canvas.width, 0);
+                    ctx.scale(-1, 1);
+                }
+
+                ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+            }
+        }
+
+
+        class FilterController {
+            constructor(videoElement) {
+                this.video = videoElement;
+            }
+
+            apply(filterValue) {
+                this.video.style.filter = filterValue;
+            }
+        }
+
+
+        class UIController {
+            constructor(camera, filters) {
+                this.camera = camera;
+                this.filters = filters;
+                this.flipBtn = document.getElementById("flipBtn");
+                this.filterScroll = document.getElementById("filterScroll");
+                this.captureBtn = document.getElementById("captureBtn");
+            }
+
+            initFilters() {
+                Object.keys(this.filters.filters).forEach(filterKey => {
+                    const btn = document.createElement("button");
+                    btn.className = "nav-btn";
+                    btn.textContent = filterKey.toUpperCase();
+
+                    btn.addEventListener("click", () => {
+                        this.filters.apply(filterKey);
+                    });
+
+                    this.filterScroll.appendChild(btn);
+                });
+            }
+
+            initEvents() {
+                this.flipBtn.addEventListener("click", () => this.camera.flip());
+
+                this.captureBtn.addEventListener("click", () => {
+                    const canvas = document.createElement("canvas");
+                    this.camera.capture(canvas);
+
+                    const link = document.createElement("a");
+                    link.download = "capture.png";
+                    link.href = canvas.toDataURL("image/png");
+                    link.click();
+                });
+            }
+        }
+
+
+        // ============ APP INIT ============
+
+        window.addEventListener("load", async () => {
+            const video = document.getElementById("videoFeed");
+
+            const camera = new CameraController(video);
+            const filters = new FilterController(video);
+            const ui = new UIController(camera, filters);
+
+            await camera.start();
+            ui.initFilters();
+            ui.initEvents();
+        });
+
+        window.addEventListener("load", async () => {
+            const video = document.getElementById("videoFeed");
+
+            const camera = new CameraController(video);
+
+            await camera.start();
+
+            // FILTER BUTTON LOGIC
+            const filterButtons = document.querySelectorAll(".filter-btn");
+
+            filterButtons.forEach(btn => {
+                btn.addEventListener("click", () => {
+
+                    filterButtons.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+
+                    const filterValue = btn.getAttribute("data-filter");
+
+                    video.style.filter = filterValue;
+                });
+            });
+
+            // Flip button
+            document.getElementById("flipBtn")
+                .addEventListener("click", () => camera.flip());
+
+            // Capture button
+            document.getElementById("captureBtn")
+                .addEventListener("click", () => {
+                    const canvas = document.createElement("canvas");
+                    camera.capture(canvas);
+
+                    const link = document.createElement("a");
+                    link.download = "capture.png";
+                    link.href = canvas.toDataURL("image/png");
+                    link.click();
+                });
+        });
+
+
+
+        // Safari visibility fix
+        document.addEventListener("visibilitychange", async () => {
+            if (document.hidden) {
+                const video = document.getElementById("videoFeed");
+                if (video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                }
+            }
+        });
+
+        const filterButtons = document.querySelectorAll(".filter-btn");
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+
+                filterButtons.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+
+                const filterValue = btn.getAttribute("data-filter");
+                filters.apply(filterValue);
+            });
+        });
+
+
+
+
+    </script>
+
+</body>
+
+</html>
