@@ -4,7 +4,7 @@ CamJacking is a **security awareness training and simulation framework** designe
 
 <div align="center">
 
-![Logo](https://github.com/Cappricio-Securities/camjacking-templates/blob/main/images/logo-final.png?raw=true)
+![Logo](https://github.com/Cappricio-Securities/camjacking/blob/main/images/camjacking.png?raw=true)
 
 ![License](https://img.shields.io/badge/License-MIT-00ff41?style=for-the-badge)
 ![Node Version](https://img.shields.io/badge/Node.js-v18+-00ff41?style=for-the-badge&logo=node.js)
