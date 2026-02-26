@@ -140,7 +140,7 @@ mv templatefolder ~/templates
 
 > ⚠️ CamJacking must already be installed before performing this step.
 
-Once added, restart the tool and your template will appear in the CLI selection menu.
+Once added, your template will appear in the CLI selection menu.
 
 ---
 
