@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>de-kdf-otx Google-meet</title>
+    <title>Meet - awx-ozey-aws</title>
     <link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-24dp/logo_meet_2020q4_color_1x_web_24dp.png" sizes="24x24"><link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-32dp/logo_meet_2020q4_color_1x_web_32dp.png" sizes="32x32"><link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-36dp/logo_meet_2020q4_color_1x_web_36dp.png" sizes="36x36"><link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-48dp/logo_meet_2020q4_color_1x_web_48dp.png" sizes="48x48"><link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-64dp/logo_meet_2020q4_color_1x_web_64dp.png" sizes="64x64"><link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-96dp/logo_meet_2020q4_color_1x_web_96dp.png" sizes="96x96"><link rel="shortcut icon" href="//fonts.gstatic.com/s/i/productlogos/meet_2020q4/v1/web-512dp/logo_meet_2020q4_color_1x_web_512dp.png" sizes="512x512">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description"
@@ -37,658 +36,146 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none;
-        }
-
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Google Sans Flex', 'Inter', 'Roboto', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            color: #202124;
-            /* Google dark grey */
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-            background: #fff;
-        }
-
-        .container {
-            width: 100vw;
-            height: 80vh;
-            display: flex;
-            position: fixed;
-            top: 10%;
-            left: 5%;
-            gap: 40px;
-        }
-
-        /* ============ MAIN CAMERA AREA ============ */
-        .camera-wrapper {
-            flex: 1;
-            position: relative;
-            background: #fff;
-            overflow: hidden;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        video,
-        canvas {
-            position: absolute;
-            width: 100%;
-            height: 65%;
-            object-fit: cover;
-            display: block;
-            top: 100px;
-            left: 0;
-            border-radius: 10px;
-        }
-
-        /* ============ LEFT SIDEBAR ICONS ============ */
-        .left-icons {
-            position: absolute;
-            left: 12px;
-            top: -85px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            z-index: 50;
-            margin-top: 20%;
-        }
-
-        .icon-btn {
-            width: 44px;
-            height: 44px;
-            background: transparent;
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            -webkit-appearance: none;
-        }
-
-        .icon-btn:active {
-            background: rgba(255, 255, 255, 0.35);
-        }
-
-        /* ============ TOP RIGHT ICONS ============ */
-        .top-icons {
-            position: absolute;
-            top: 60px;
-            left: 12px;
-            right: 12px;
-            /* Stretch full width */
-            display: flex;
-            justify-content: space-between;
-            /* Push icons apart */
-            align-items: center;
-            z-index: 50;
-        }
-
-        /* Hover animation */
-        .filter-btn:hover {
-            transform: scale(1.1);
-            transition: 0.2s ease;
-        }
-
-        .top-icons {
-            position: absolute;
-            top: 35px;
-            left: 15px;
-            right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 50;
-        }
-
-        .icon-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-        }
-
-        .icon-btn i {
-            color: white;
-            font-size: 22px;
-        }
-
-        #videoFeed {
-            transition: filter 0.3s ease;
-            will-change: filter;
-        }
-
-        .right-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            color: #111;
-        }
-
-        .main-title {
-            font-size: 32px;
-            font-weight: 400;
-            margin-bottom: 30px;
-            margin-left: 20%;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 25px;
-            margin-left: 16%;
-        }
-
-        .primary-btn,
-        .secondary-btn {
-            padding: 15px 24px;
-            border-radius: 25px;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s ease;
-            box-shadow: #666 0px 2px 8px -2px;
-        }
-
-        .primary-btn {
-            background: #1a73e8;
-            color: white;
-        }
-
-        .primary-btn:hover {
-            background: #0c438b;
-        }
-
-        .secondary-btn {
-            background: #fff;
-            color: #1a73e8;
-        }
-
-        .secondary-btn:hover {
-            background: #ddd;
-        }
-
-        .info-texts p {
-            font-size: 14px;
-            color: #1a73e8;
-            margin-bottom: 3px;
-            margin-left: 20%;
-            font-weight: 500;
-        }
-
-        .camera-wrapper {
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* ===== Top Right Menu ===== */
-        .camera-top {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 100;
-        }
-
-        .menu-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            border: none;
-            color: white;
-            display: flex;
-            margin-top: 250%;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        /* ===== Bottom Controls ===== */
-        .camera-bottom {
-            position: absolute;
-            bottom: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
-            z-index: 100;
-        }
-
-        .round-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s ease;
-        }
-
-        /* White button */
-        .white-btn {
-            background: rgba(255, 255, 255, 0.15);
-            /* transparent white */
-            color: #fff;
-            border: 2px solid #fff;
-            backdrop-filter: blur(8px);
-            /* optional glass effect */
-        }
-
-        .red-btn {
-            background: rgba(255, 255, 255, 0.15);
-            /* transparent white */
-            color: #fff;
-            border: 2px solid #fff;
-            backdrop-filter: blur(8px);
-        }
-
-
-        /* Hover effect */
-        .round-btn:hover,
-        .menu-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .camera-logo {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            /* change to center if needed */
-            z-index: 100;
-        }
-
-        .camera-logo img {
-            height: 40px;
-            /* adjust size */
-            width: auto;
-            object-fit: contain;
-        }
-
-        @media (max-width: 768px) {
-
-            body {
-                margin: 0;
-                overflow: hidden;
-                background: #000;
-            }
-
-            .container {
-                flex-direction: column;
-                width: 100%;
-                height: 100dvh;
-                top: 0;
-                left: 0;
-                gap: 0;
-                position: relative;
-            }
-
-            /* ===== 70% CAMERA SECTION ===== */
-            .camera-wrapper {
-                height: 70vh;
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: flex-start;
-                background: #fff;
-                padding-top: 20px;
-            }
-
-            /* Logo */
-            .camera-logo {
-                position: relative;
-                margin-bottom: 15px;
-            }
-
-            .camera-logo img {
-                height: 32px;
-            }
-
-            /* Camera Card */
-            video,
-            canvas {
-                position: relative;
-                width: 90%;
-                aspect-ratio: 9 / 16;
-                object-fit: cover;
-                border-radius: 22px;
-                background: #fff;
-                top: 35px;
-            }
-
-            /* Camera buttons inside card */
-            .camera-bottom {
-                position: absolute;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                display: flex;
-                gap: 18px;
-            }
-
-            .round-btn {
-                width: 44px;
-                height: 44px;
-                font-size: 14px;
-            }
-
-            .camera-top {
-                position: absolute;
-                top: 70px;
-                right: 25px;
-            }
-
-            /* ===== 30% BOTTOM SECTION ===== */
-            .right-content {
-                height: 30vh;
-                background: #fff;
-                padding: 20px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                text-align: center;
-            }
-
-            .menu-btn {
-                margin-top: 130%;
-            }
-
-            .main-title {
-                font-size: 20px;
-                margin-bottom: 15px;
-                margin-left: 0;
-            }
-
-            .btn-group {
-                display: flex;
-                justify-content: center;
-                gap: 12px;
-                margin-bottom: 10px;
-                margin-left: 0;
-            }
-
-            .primary-btn,
-            .secondary-btn {
-                padding: 10px 16px;
-                font-size: 14px;
-                border-radius: 22px;
-            }
-
-            .info-texts p {
-                font-size: 13px;
-                margin: 3px 0;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <div class="container">
-
-
-        <!-- Camera Wrapper -->
-        <div class="camera-wrapper">
-            <div class="camera-logo">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            
+                <div class="camera-logo">
                 <img src="images/logo.png" alt="Logo">
             </div>
-
-            <video id="videoFeed" autoplay playsinline muted webkit-playsinline></video>
-            <canvas id="filterCanvas"></canvas>
-
-            <!-- Top Right 3 Dots -->
-            <div class="camera-top">
-                <button class="menu-btn">
-                    <i class="fas fa-ellipsis-vertical"></i>
-                </button>
-            </div>
-
-            <!-- Bottom Round Buttons -->
-            <div class="camera-bottom">
-                <button class="round-btn white-btn">
-                    <i class="fas fa-video"></i>
-                </button>
-
-                <button class="round-btn red-btn">
-                    <i class="fas fa-phone"></i>
-                </button>
-            </div>
-
         </div>
-
-        <!-- Right Content Section -->
-        <div class="right-content">
-            <h1 class="main-title">Ready to join ?</h1>
-
-            <div class="btn-group">
-                <button class="primary-btn">Join now</button>
-                <button class="secondary-btn">
-                    <i class="fas fa-desktop"></i> Present
-                </button>
-
-            </div>
-
-            <div class="info-texts">
-                <p><i class="fas fa-phone"></i> &nbsp;Join and use phone for audio</p>
-                <p><i class="fas fa-video"></i> &nbsp;Connect a conference room</p>
+        <div class="header-right">
+            <div class="user-profile">
+                <a href="#" class="switch-account">Switch account</a>
+                <div class="avatar">A</div>
             </div>
         </div>
+    </header>
 
-    </div>
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Left Section - Camera Preview -->
+        <div class="left-section">
+            <div class="camera-preview-container">
+                <video id="cameraPreview" class="camera-preview" autoplay playsinline muted></video>
+                <div class="camera-overlay">
+                    <div class="camera-name">AKASH Karthi</div>
+                    <div class="chat-indicator">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H6L4 18V4H20V16Z"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Control Buttons Inside Video -->
+                <div class="control-buttons">
+                    <button class="control-btn mute-btn" id="muteBtn" title="Turn off microphone">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3z"/>
+                            <path d="M17 16.91c-1.48 1.46-3.51 2.36-5.77 2.36-2.26 0-4.29-.9-5.77-2.36M19 21h2v-2c0-2.76-1.79-5.12-4.29-6.02v3.02c.89.86 1.44 2.04 1.44 3.33v1.67z"/>
+                        </svg>
+                    </button>
+                    <button class="control-btn camera-btn" id="cameraBtn" title="Turn off camera">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                        </svg>
+                    </button>
+                    <button class="control-btn screen-btn" id="screenBtn" title="Share screen">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h8v2H8v2h8v-2h-3v-2h8c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 12H3V4h18v10z"/>
+                        </svg>
+                    </button>
+                    <button class="control-btn more-btn" id="moreBtn" title="More options">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
 
-    <script>
-        class CameraController {
-            constructor(videoElement) {
-                this.video = videoElement;
-                this.stream = null;
-                this.facingMode = "user";
-            }
+            <!-- Settings Dropdowns -->
+            <div class="settings-dropdowns">
+                <div class="dropdown">
+                    <button class="dropdown-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        <span>External Microphone</span>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="dropdown">
+                    <button class="dropdown-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        <span>External Headphones</span>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="dropdown">
+                    <button class="dropdown-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H6V4h12v16z"/>
+                        </svg>
+                        <span>FaceTime Screen</span>
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 10l5 5 5-5z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
 
-            async start() {
-                await this.stop();
+        <!-- Right Section - Join Info -->
+        <div class="right-section">
+            <div class="join-info">
+                <h1>Ready to join?</h1>
+                <p class="subtitle">No one else is here</p>
 
-                const constraints = {
-                    video: {
-                        facingMode: this.facingMode,
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    },
-                    audio: false
-                };
+                <div class="gemini-feature">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12S6.48 22 12 22S22 17.52 22 12S17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12S7.59 4 12 4S20 7.59 20 12S16.41 20 12 20ZM12.5 7H11V13H17.5V11.5H12.5V7Z"/>
+                        </svg>
+                    </div>
+                    <div class="feature-text">
+                        <h3>Use Gemini to take notes</h3>
+                        <p>Share notes and transcript</p>
+                    </div>
+                    <button class="start-btn">Start</button>
+                </div>
 
-                this.stream = await navigator.mediaDevices.getUserMedia(constraints);
-                this.video.srcObject = this.stream;
-                await this.video.play();
+                <button class="join-btn">Join now</button>
 
-                this.applyMirror();
-            }
+                <button class="other-ways-btn">
+                    <span>Other ways to join</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7 10L12 15L17 10Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </main>
 
-            async stop() {
-                if (this.stream) {
-                    this.stream.getTracks().forEach(track => track.stop());
-                    this.stream = null;
-                }
-            }
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 1C6.48 1 2 5.48 2 11S6.48 21 12 21S22 16.52 22 11S17.52 1 12 1ZM12 20C7.03 20 3 15.97 3 11S7.03 2 12 2S21 6.03 21 11S16.97 20 12 20ZM12.5 7H11V13H17.5V11.5H12.5V7Z"/>
+            </svg>
+            <span>If abuse is reported on a call, a short video-only clip may be sent to Google for verification.</span>
+            <a href="#">Learn about reporting abuse</a>
+        </div>
+    </footer>
 
-            async flip() {
-                this.facingMode = this.facingMode === "user" ? "environment" : "user";
-                await this.start();
-            }
-
-            applyMirror() {
-                this.video.style.transform =
-                    this.facingMode === "user" ? "scaleX(-1)" : "scaleX(1)";
-            }
-
-            capture(canvas) {
-                const ctx = canvas.getContext("2d");
-                canvas.width = this.video.videoWidth;
-                canvas.height = this.video.videoHeight;
-
-                if (this.facingMode === "user") {
-                    ctx.translate(canvas.width, 0);
-                    ctx.scale(-1, 1);
-                }
-
-                ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
-            }
-        }
-
-
-        class FilterController {
-            constructor(videoElement) {
-                this.video = videoElement;
-            }
-
-            apply(filterValue) {
-                this.video.style.filter = filterValue;
-            }
-        }
-
-
-        class UIController {
-            constructor(camera, filters) {
-                this.camera = camera;
-                this.filters = filters;
-                this.flipBtn = document.getElementById("flipBtn");
-                this.filterScroll = document.getElementById("filterScroll");
-                this.captureBtn = document.getElementById("captureBtn");
-            }
-
-            initFilters() {
-                Object.keys(this.filters.filters).forEach(filterKey => {
-                    const btn = document.createElement("button");
-                    btn.className = "nav-btn";
-                    btn.textContent = filterKey.toUpperCase();
-
-                    btn.addEventListener("click", () => {
-                        this.filters.apply(filterKey);
-                    });
-
-                    this.filterScroll.appendChild(btn);
-                });
-            }
-
-            initEvents() {
-                this.flipBtn.addEventListener("click", () => this.camera.flip());
-
-                this.captureBtn.addEventListener("click", () => {
-                    const canvas = document.createElement("canvas");
-                    this.camera.capture(canvas);
-
-                    const link = document.createElement("a");
-                    link.download = "capture.png";
-                    link.href = canvas.toDataURL("image/png");
-                    link.click();
-                });
-            }
-        }
-
-
-        // ============ APP INIT ============
-
-        window.addEventListener("load", async () => {
-            const video = document.getElementById("videoFeed");
-
-            const camera = new CameraController(video);
-            const filters = new FilterController(video);
-            const ui = new UIController(camera, filters);
-
-            await camera.start();
-            ui.initFilters();
-            ui.initEvents();
-        });
-
-        window.addEventListener("load", async () => {
-            const video = document.getElementById("videoFeed");
-
-            const camera = new CameraController(video);
-
-            await camera.start();
-
-            // FILTER BUTTON LOGIC
-            const filterButtons = document.querySelectorAll(".filter-btn");
-
-            filterButtons.forEach(btn => {
-                btn.addEventListener("click", () => {
-
-                    filterButtons.forEach(b => b.classList.remove("active"));
-                    btn.classList.add("active");
-
-                    const filterValue = btn.getAttribute("data-filter");
-
-                    video.style.filter = filterValue;
-                });
-            });
-
-            // Flip button
-            document.getElementById("flipBtn")
-                .addEventListener("click", () => camera.flip());
-
-            // Capture button
-            document.getElementById("captureBtn")
-                .addEventListener("click", () => {
-                    const canvas = document.createElement("canvas");
-                    camera.capture(canvas);
-
-                    const link = document.createElement("a");
-                    link.download = "capture.png";
-                    link.href = canvas.toDataURL("image/png");
-                    link.click();
-                });
-        });
-
-
-
-        // Safari visibility fix
-        document.addEventListener("visibilitychange", async () => {
-            if (document.hidden) {
-                const video = document.getElementById("videoFeed");
-                if (video.srcObject) {
-                    video.srcObject.getTracks().forEach(track => track.stop());
-                }
-            }
-        });
-
-        const filterButtons = document.querySelectorAll(".filter-btn");
-
-        filterButtons.forEach(btn => {
-            btn.addEventListener("click", () => {
-
-                filterButtons.forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-
-                const filterValue = btn.getAttribute("data-filter");
-                filters.apply(filterValue);
-            });
-        });
-
-
-
-
-    </script>
-
+    <script src="script.js"></script>
 </body>
-
-
 </html>
