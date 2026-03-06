@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discord</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<meta name="description"
+content="Join voice and video calls instantly with a Discord-style meeting platform. Chat, stream, and collaborate with friends or teams in real-time." />
+<link rel="icon" href="./logo.png" type="image/png">
+<meta name="keywords"
+content="Discord, Discord voice chat, Discord video call, online voice chat, gaming voice chat, community chat platform, screen sharing, group video call, real-time chat, voice server, online communication" />
+
+<!-- Open Graph / Facebook / WhatsApp -->
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://discord.com/" />
+
+<meta property="og:title"
+content="Discord | Voice, Video & Text Chat for Communities" />
+
+<meta property="og:description"
+content="Hang out with friends, build communities, and join voice or video calls instantly. Discord makes communication simple for gaming, teams, and communities." />
+
+<meta property="og:image"
+content="./logo.png" />
+
+<meta property="og:image:width" content="1080" />
+<meta property="og:image:height" content="1080" />
+
+<!-- Twitter Preview -->
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content="https://discord.com/" />
+
+<meta name="twitter:title"
+content="Discord | Voice, Video & Text Chat for Communities" />
+
+<meta name="twitter:description"
+content="Talk, stream, and collaborate in real time with Discord voice and video channels." />
+
+<meta name="twitter:image"
+content="https://cdn.discordapp.com/attachments/discord-og-image.png" />
+
+<!-- Fonts (similar modern UI fonts) -->
+
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:system-ui;
+background:#000;
+color:#fff;
+}
+
+.discord-container{
+display:flex;
+height:100vh;
+background:#000;
+}
+
+/* LEFT SERVER SIDEBAR */
+
+.sidebar-left{
+width:72px;
+background:#202225;
+display:flex;
+flex-direction:column;
+align-items:center;
+padding:8px 0;
+gap:8px;
+}
+
+.server-icon{
+width:48px;
+height:48px;
+border-radius:50%;
+background:linear-gradient(135deg,#5865f2,#7289da);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+cursor:pointer;
+}
+
+.servers-list{
+display:flex;
+flex-direction:column;
+gap:8px;
+align-items:center;
+width:100%;
+}
+
+.server-item{
+width:48px;
+height:48px;
+border-radius:50%;
+background:#2c2f33;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+transition:.3s;
+}
+
+.server-item:hover{
+background:#5865f2;
+}
+
+.server-item.active{
+background:linear-gradient(135deg,#5865f2,#7289da);
+border-radius:30%;
+}
+
+.divider{
+width:32px;
+height:2px;
+background:#2c2f33;
+}
+
+/* NAV SIDEBAR */
+
+.sidebar-nav{
+width:240px;
+background:#2f3136;
+display:flex;
+flex-direction:column;
+padding:16px 8px;
+}
+
+.server-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:8px 12px;
+border-bottom:1px solid #202225;
+margin-bottom:16px;
+}
+
+.close-btn{
+background:none;
+border:none;
+color:#b9bbbe;
+font-size:18px;
+cursor:pointer;
+}
+
+.user-info-section{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:12px;
+padding:16px;
+}
+
+.user-avatar{
+width:80px;
+height:80px;
+border-radius:50%;
+background:linear-gradient(135deg,#5865f2,#7289da);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+font-weight:bold;
+}
+
+.invite-btn{
+background:#5865f2;
+border:none;
+color:white;
+padding:10px;
+border-radius:4px;
+cursor:pointer;
+margin:12px 0;
+}
+
+.channels-header{
+font-size:11px;
+font-weight:700;
+color:#72767d;
+padding:8px 12px;
+display:flex;
+justify-content:space-between;
+}
+
+.channel-item{
+padding:8px 12px;
+color:#b9bbbe;
+cursor:pointer;
+display:flex;
+gap:8px;
+border-radius:4px;
+}
+
+.channel-item:hover{
+background:#3c3f45;
+color:white;
+}
+
+.active-voice{
+background:#5865f2;
+color:white;
+}
+
+/* MAIN AREA */
+
+.main-content{
+flex:1;
+display:flex;
+background:#36393f;
+}
+
+.video-area{
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,#ff6b6b,#ff5252);
+margin:12px;
+border-radius:12px;
+}
+
+.right-panel{
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#40444b;
+margin:12px;
+border-radius:12px;
+}
+
+.right-content{
+text-align:center;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:20px;
+}
+
+.avatar-circle{
+width:100px;
+height:100px;
+border-radius:50%;
+background:linear-gradient(135deg,#d946ef,#ec4899);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:32px;
+}
+
+/* BOTTOM BAR */
+
+.voice-status-bar{
+position:fixed;
+bottom:40px;
+left:312px;
+right:0;
+background:#2f3136;
+padding:10px;
+display:flex;
+justify-content:space-between;
+}
+
+.control-btn{
+background:#2f3136;
+border:1px solid #202225;
+color:#b9bbbe;
+padding:6px 12px;
+cursor:pointer;
+}
+
+/* USER BAR */
+
+.user-profile-bar{
+position:fixed;
+bottom:0;
+left:312px;
+right:0;
+background:#292b2f;
+padding:8px;
+display:flex;
+justify-content:space-between;
+}
+
+.profile-avatar{
+width:32px;
+height:32px;
+border-radius:50%;
+background:linear-gradient(135deg,#5865f2,#7289da);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:12px;
+}
+
+.profile-btn{
+background:none;
+border:none;
+color:#b9bbbe;
+font-size:16px;
+cursor:pointer;
+}
+
+.video-area video{
+width:100%;
+height:100%;
+object-fit:cover;
+border-radius:12px;
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+
+@media (max-width:768px){
+
+.discord-container{
+flex-direction:column;
+}
+
+/* SERVERS TOP BAR */
+
+.sidebar-left{
+width:100%;
+height:60px;
+flex-direction:row;
+justify-content:flex-start;
+overflow-x:auto;
+padding:8px;
+border-bottom:1px solid #202225;
+}
+
+.servers-list{
+flex-direction:row;
+}
+
+.server-item,
+.server-icon{
+width:40px;
+height:40px;
+min-width:40px;
+}
+
+/* CHANNEL MENU */
+
+.sidebar-nav{
+position:fixed;
+top:60px;
+left:-260px;
+height:100%;
+width:260px;
+z-index:1000;
+transition:0.3s;
+}
+
+.sidebar-nav.open{
+left:0;
+}
+
+/* VIDEO AREA FULLSCREEN */
+
+.main-content{
+flex:1;
+flex-direction:column;
+}
+
+.video-area{
+position:relative;
+margin:0;
+border-radius:0;
+height:100%;
+}
+
+.video-area video{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* HIDE RIGHT PANEL */
+
+.right-panel{
+display:none;
+}
+
+/* FLOATING VOICE BAR */
+
+.voice-status-bar{
+position:fixed;
+bottom:70px;
+left:0;
+right:0;
+padding:10px;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(10px);
+}
+
+/* PROFILE BAR */
+
+.user-profile-bar{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+}
+
+}
+
+</style>
+<button id="menuBtn">☰</button>
+</head>
+
+<body>
+
+<div class="discord-container">
+
+<!-- LEFT SIDEBAR -->
+
+<aside class="sidebar-left">
+
+<div class="server-icon">GA</div>
+
+<div class="servers-list">
+<div class="server-item active">JA</div>
+<div class="divider"></div>
+<div class="server-item">+</div>
+<div class="server-item">🎮</div>
+<div class="server-item">✓</div>
+</div>
+
+</aside>
+
+<!-- NAV -->
+
+<aside class="sidebar-nav">
+
+<div class="server-header">
+<div>Goofy Attack's server</div>
+<button class="close-btn">✕</button>
+</div>
+
+<div class="user-info-section">
+<div class="user-avatar">AK</div>
+<div>An adventure begins.</div>
+</div>
+
+<button class="invite-btn">Invite people</button>
+
+<div class="channels-header">
+<span>VOICE CHANNELS</span>
+</div>
+
+<div class="channel-item">🔊 Lobby</div>
+<div class="channel-item">🔊 Gaming</div>
+<div class="channel-item active-voice">🎙 Goofy</div>
+
+</aside>
+
+<!-- MAIN -->
+
+<main class="main-content">
+
+<div class="video-area">
+    <video id="camera" autoplay playsinline muted></video>
+</div>
+
+<div class="right-panel">
+
+<div class="right-content">
+
+<div class="avatar-circle">JA</div>
+
+<h3>No one else is here yet</h3>
+
+<button class="invite-btn">Invite</button>
+
+</div>
+
+</div>
+
+</main>
+
+</div>
+
+<!-- VOICE BAR -->
+
+<div class="voice-status-bar">
+
+<div>🟢 Voice Connected</div>
+
+<div>
+<button class="control-btn">🎥 Video</button>
+<button class="control-btn">📺 Screen</button>
+</div>
+
+</div>
+
+<!-- PROFILE BAR -->
+
+<div class="user-profile-bar">
+
+<div style="display:flex;gap:10px;align-items:center">
+
+<div class="profile-avatar">AK</div>
+
+<div>
+<div>Goofy</div>
+<div style="font-size:11px;color:#72767d">#2281</div>
+</div>
+
+</div>
+
+<div>
+
+<button class="profile-btn">🎤</button>
+<button class="profile-btn">🎧</button>
+<button class="profile-btn">⚙️</button>
+
+</div>
+
+</div>
+
+<script>
+
+document.querySelectorAll(".server-item").forEach(el=>{
+el.onclick=()=>{
+document.querySelectorAll(".server-item").forEach(s=>s.classList.remove("active"))
+el.classList.add("active")
+}
+})
+
+
+async function startCamera(){
+try{
+
+const stream = await navigator.mediaDevices.getUserMedia({
+video:true,
+audio:false
+});
+
+video.srcObject = stream;
+
+}catch(err){
+console.error("Camera error:", err);
+alert("Camera permission denied");
+}
+}
+
+startCamera();
+
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.querySelector(".sidebar-nav");
+
+menuBtn.onclick = () => {
+sidebar.classList.toggle("open");
+};
+
+const video = document.getElementById("camera");
+
+async function startCamera(){
+
+const stream = await navigator.mediaDevices.getUserMedia({
+video:{
+facingMode:"user",
+width:{ideal:1280},
+height:{ideal:720}
+},
+audio:false
+});
+
+video.srcObject = stream;
+
+}
+
+startCamera();
+</script>
+
+</body>
+</html>
