@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<title>B612 Camera</title>
+<style>
+/* ── RESET ─────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none;}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;}
+
+/* ── APP SHELL ─────────────────────────────────────────────── */
+.app{position:relative;width:100%;height:100dvh;overflow:hidden;background:#000;}
+
+/* ── CAMERA FEED ───────────────────────────────────────────── */
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+
+/* ── FLASH ─────────────────────────────────────────────────── */
+#flash{position:absolute;inset:0;z-index:99;background:#fff;opacity:0;pointer-events:none;transition:opacity .06s;}
+
+/* ── GREEN DOT — small, no glow ────────────────────────────── */
+.live-dot{
+  position:absolute;top:15px;right:13px;
+  width:8px;height:8px;border-radius:50%;
+  background:#2ecc5f;z-index:40;
+  /* NO box-shadow glow */
+}
+
+/* ════════════════════════════════════════════════════════════
+   TOP BAR
+   ════════════════════════════════════════════════════════════ */
+.top-bar{
+  position:absolute;top:0;left:0;right:0;height:62px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 11px;z-index:30;
+}
+
+/* Bell */
+.tb-icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:1;transition:opacity .12s;}
+.tb-icon-btn:active{opacity:.5;}
+.notif-wrap{position:relative;width:34px;height:34px;display:flex;align-items:center;justify-content:center;}
+.notif-wrap svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.notif-badge{
+  position:absolute;top:0;right:-1px;
+  background:#e83c5a;color:#fff;
+  font-size:7.5px;font-weight:800;
+  min-width:14px;height:14px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 2px;border:1.5px solid #000;line-height:1;
+}
+
+/* Crown — flat gold circle, no glow */
+.crown-btn{
+  width:33px;height:33px;border-radius:50%;
+  background:#f5c21e;
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  margin-left:4px;
+  transition:opacity .12s;
+  /* NO box-shadow */
+}
+.crown-btn:active{opacity:.6;}
+.crown-btn svg{width:16px;height:16px;fill:#fff;}
+
+/* Mode pill — subtle dark blur, no border glow */
+.mode-pill{
+  display:flex;align-items:center;
+  background:rgba(30,30,30,.70);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-radius:24px;padding:3px 4px;gap:1px;
+  /* NO box-shadow, NO border */
+}
+.mp-btn{
+  background:transparent;border:none;cursor:pointer;
+  color:rgba(255,255,255,.48);
+  font-size:12.5px;font-weight:500;
+  padding:5px 13px;border-radius:20px;
+  transition:background .18s,color .18s;
+  letter-spacing:.01em;white-space:nowrap;line-height:1;
+}
+.mp-btn.active{background:rgba(255,255,255,.18);color:#fff;}
+.mp-btn:active{opacity:.55;}
+
+/* Flip — plain circle border, no shadow */
+.flip-btn{
+  width:37px;height:37px;border-radius:50%;
+  border:1.8px solid rgba(255,255,255,.72);
+  background:rgba(0,0,0,.15);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:opacity .12s;
+  /* NO box-shadow */
+}
+.flip-btn:active{opacity:.45;}
+.flip-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ════════════════════════════════════════════════════════════
+   SUB BANNERS
+   ════════════════════════════════════════════════════════════ */
+.sub-banner{
+  position:absolute;top:67px;left:50%;transform:translateX(-50%);
+  z-index:25;display:none;align-items:center;gap:6px;
+  background:rgba(20,20,20,.72);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  color:#fff;font-size:13px;font-weight:500;
+  padding:7px 18px 7px 14px;border-radius:22px;
+  white-space:nowrap;letter-spacing:.01em;
+  /* NO border, NO box-shadow */
+}
+.sub-banner.show{display:flex;}
+.music-banner svg{flex-shrink:0;width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;}
+.hires-banner{color:#ffe96e;font-size:11px;letter-spacing:.05em;font-weight:600;text-transform:uppercase;}
+
+/* ════════════════════════════════════════════════════════════
+   LEFT SIDEBAR — clean, no glow, exactly like app
+   ════════════════════════════════════════════════════════════ */
+.sidebar{
+  position:absolute;left:7px;top:50%;transform:translateY(-50%);
+  z-index:20;display:flex;flex-direction:column;align-items:center;gap:1px;
+}
+
+.sb-btn{
+  background:none;border:none;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:3px 5px;
+  transition:opacity .12s;
+  -webkit-appearance:none;
+}
+.sb-btn:active{opacity:.4;}
+
+/* Icon SVG container — NO filter/drop-shadow */
+.sb-icon{
+  width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+}
+.sb-icon svg{width:44px;height:44px;display:block;overflow:visible;}
+
+/* Ratio wrapper — no circle */
+.sb-ratio{
+  display:flex;align-items:center;justify-content:center;
+  height:44px;
+}
+
+/* Label — plain white, small */
+.sb-lbl{
+  color:rgba(255,255,255,.88);
+  font-size:10px;font-weight:400;
+  letter-spacing:.01em;
+  line-height:1;text-align:center;
+  /* NO text-shadow */
+}
+
+/* Collapse chevron */
+.collapse-btn{
+  background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  padding:5px 8px;margin-top:3px;
+  transition:opacity .12s;
+}
+.collapse-btn:active{opacity:.38;}
+.collapse-btn svg{
+  width:20px;height:20px;
+  stroke:rgba(255,255,255,.75);fill:none;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+  /* NO filter */
+}
+
+/* ════════════════════════════════════════════════════════════
+   BOTTOM AREA
+   ════════════════════════════════════════════════════════════ */
+.bottom-area{
+  position:absolute;bottom:0;left:0;right:0;z-index:20;
+  display:flex;flex-direction:column;align-items:center;
+  padding-bottom:max(env(safe-area-inset-bottom,0px),0px);
+}
+
+/* Gallery / NORMAL VIDEO row */
+.mode-row{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;padding:0 24px;margin-bottom:8px;
+}
+
+.gallery-btn{
+  width:46px;height:46px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.55);
+  background:rgba(0,0,0,.15);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:opacity .12s;
+  /* NO box-shadow */
+}
+.gallery-btn:active{opacity:.5;}
+.gallery-btn svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+
+.cap-toggle{display:flex;gap:18px;}
+.ct-btn{
+  background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.38);
+  font-size:14px;font-weight:700;
+  letter-spacing:.1em;padding:2px 0;
+  position:relative;transition:color .18s;
+  /* NO text-shadow */
+}
+.ct-btn.active{color:#fff;}
+.ct-btn.active::after{
+  content:'';position:absolute;bottom:-3px;left:50%;transform:translateX(-50%);
+  width:18px;height:2px;background:#fff;border-radius:2px;
+}
+.mode-row-right{width:46px;height:46px;}
+
+/* ════════════════════════════════════════════════════════════
+   TOOL + SHUTTER ROW
+   ════════════════════════════════════════════════════════════ */
+.tool-shutter-row{
+  display:flex;align-items:center;justify-content:space-around;
+  width:100%;padding:4px 4px 6px;
+}
+
+.tool-btn{
+  background:none;border:none;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:4px 6px;flex:1;
+  transition:opacity .12s;
+}
+.tool-btn:active{opacity:.4;}
+.tool-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
+.tool-icon svg{
+  width:26px;height:26px;stroke:#fff;fill:none;
+  stroke-width:1.55;stroke-linecap:round;stroke-linejoin:round;
+  /* NO filter/drop-shadow */
+}
+.tool-lbl{
+  font-size:10.5px;font-weight:400;
+  color:rgba(255,255,255,.85);
+  letter-spacing:.01em;line-height:1;
+  /* NO text-shadow */
+}
+
+/* ── SHUTTER ───────────────────────────────────────────────── */
+.shutter-wrap{display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0 4px;}
+.shutter-btn{
+  width:78px;height:78px;border-radius:50%;
+  border:none;background:none;cursor:pointer;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .1s;-webkit-appearance:none;
+}
+.shutter-btn:active{transform:scale(.92);}
+
+/* Outer ring — solid, no shadow */
+.shutter-outer{
+  width:78px;height:78px;border-radius:50%;
+  border:4px solid #fff;
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .22s;
+  /* NO box-shadow */
+}
+/* Inner fill */
+.shutter-inner{
+  width:64px;height:64px;border-radius:50%;
+  background:#fff;
+  transition:background .22s,border-radius .22s,width .22s,height .22s;
+  /* NO box-shadow */
+}
+
+/* Video mode — white ring, white inner, gentle pulse */
+.shutter-outer.video{
+  border-color:#fff;
+  animation:vidPulse 2s ease-in-out infinite;
+}
+.shutter-inner.video{background:#fff;}
+
+/* Recording — white ring, white square, gentle pulse */
+.shutter-outer.rec{
+  border-color:#fff;
+  animation:recPulse 1s ease-in-out infinite;
+}
+.shutter-inner.rec{background:#fff;width:26px;height:26px;border-radius:6px;}
+
+/* Pulses are SUBTLE — just opacity, no glow rings */
+@keyframes vidPulse{
+  0%,100%{opacity:1;}
+  50%{opacity:.75;}
+}
+@keyframes recPulse{
+  0%,100%{opacity:1;}
+  50%{opacity:.6;}
+}
+
+/* ════════════════════════════════════════════════════════════
+   BOTTOM NAV
+   ════════════════════════════════════════════════════════════ */
+.bottom-nav{
+  width:100%;display:flex;align-items:center;justify-content:space-around;
+  padding:7px 0 max(16px,env(safe-area-inset-bottom,16px));
+  border-top:1px solid rgba(255,255,255,.07);
+  /* NO background blur */
+}
+.bn-btn{
+  background:none;border:none;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:4px 14px;transition:opacity .12s;
+}
+.bn-btn:active{opacity:.38;}
+.bn-btn svg{
+  width:23px;height:23px;
+  stroke:rgba(255,255,255,.40);fill:none;
+  stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;
+  /* NO filter */
+}
+.bn-btn.active svg{stroke:#fff;}
+
+.ai-box{
+  width:28px;height:21px;
+  border:1.7px solid rgba(255,255,255,.40);border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:800;color:rgba(255,255,255,.40);
+  letter-spacing:.5px;
+}
+.bn-btn.active .ai-box{border-color:#fff;color:#fff;}
+
+/* ════════════════════════════════════════════════════════════
+   TOAST
+   ════════════════════════════════════════════════════════════ */
+.toast{
+  position:fixed;bottom:106px;left:50%;transform:translateX(-50%) translateY(12px);
+  background:rgba(15,15,15,.86);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  color:#fff;font-size:12.5px;font-weight:500;
+  padding:9px 20px;border-radius:22px;
+  z-index:999;opacity:0;pointer-events:none;
+  transition:opacity .2s,transform .2s;white-space:nowrap;
+  /* NO border, NO box-shadow */
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── iPHONE MODE ───────────────────────────────────────────── */
+.iphone-mode .tool-btn{visibility:hidden;pointer-events:none;}
+
+/* ── RESPONSIVE ────────────────────────────────────────────── */
+@media(min-width:480px){
+  .app{max-width:393px;margin:0 auto;height:100dvh;}
+}
+@media(max-width:360px){
+  .shutter-outer,.shutter-btn{width:70px;height:70px;}
+  .shutter-inner{width:57px;height:57px;}
+  .shutter-inner.rec{background:#fff;width:23px;height:23px;}
+  .mp-btn{font-size:11px;padding:5px 9px;}
+  .ct-btn{font-size:12.5px;}
+  .sb-icon{width:38px;height:38px;}
+  .sb-icon svg{width:38px;height:38px;}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <video id="cam" autoplay playsinline muted></video>
+  <div id="flash"></div>
+  <div class="live-dot"></div>
+
+  <!-- ══ TOP BAR ══════════════════════════════════════════════ -->
+  <div class="top-bar">
+    <div style="display:flex;align-items:center;gap:4px;">
+      <button class="tb-icon-btn" onclick="toast('Notifications')">
+        <div class="notif-wrap">
+          <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-badge">N</span>
+        </div>
+      </button>
+      <button class="crown-btn" onclick="toast('B612 Premium')">
+        <!-- solid crown shape -->
+        <svg viewBox="0 0 24 24" fill="white"><path d="M3 18h18v2H3zM3 7l4.5 4.5L12 4l4.5 7.5L21 7v9H3z"/></svg>
+      </button>
+    </div>
+
+    <div class="mode-pill">
+      <button class="mp-btn active" id="btnStd"    onclick="setMode('std')">Standard</button>
+      <button class="mp-btn"        id="btnHires"  onclick="setMode('hires')">Hi-res</button>
+      <button class="mp-btn"        id="btnIphone" onclick="setMode('iphone')">iPhone</button>
+    </div>
+
+    <button class="flip-btn" onclick="flipCam()">
+      <!-- circular arrows — B612 flip icon -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 4v6h6"/><path d="M23 20v-6h-6"/>
+        <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- ══ BANNERS ═══════════════════════════════════════════════ -->
+  <div class="sub-banner music-banner" id="musicBanner">
+    <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    Add music
+  </div>
+  <div class="sub-banner hires-banner" id="hiresBanner">Maximum-resolution filming</div>
+
+  <!-- ══ LEFT SIDEBAR ══════════════════════════════════════════ -->
+  <div class="sidebar" id="sidebar">
+
+    <!-- MORE: three dots in thin circle -->
+    <button class="sb-btn" onclick="toast('More')">
+      <div class="sb-icon">
+        <svg viewBox="0 0 44 44" fill="none">
+          <circle cx="22" cy="22" r="19.5" stroke="rgba(255,255,255,0.80)" stroke-width="1.6"/>
+          <circle cx="13.5" cy="22" r="2" fill="white"/>
+          <circle cx="22"   cy="22" r="2" fill="white"/>
+          <circle cx="30.5" cy="22" r="2" fill="white"/>
+        </svg>
+      </div>
+      <span class="sb-lbl">More</span>
+    </button>
+
+    <!-- DURATION: "5" in thin circle (video only) -->
+    <button class="sb-btn" id="sbDuration" onclick="toast('Duration: 5s')">
+      <div class="sb-icon">
+        <svg viewBox="0 0 44 44" fill="none">
+          <circle cx="22" cy="22" r="19.5" stroke="rgba(255,255,255,0.80)" stroke-width="1.6"/>
+          <text x="22" y="28.5" text-anchor="middle" fill="white"
+            font-size="18" font-weight="600"
+            font-family="-apple-system,Helvetica Neue,sans-serif">5</text>
+        </svg>
+      </div>
+      <span class="sb-lbl">Duration</span>
+    </button>
+
+    <!-- FLASH: bolt + × in circle -->
+    <button class="sb-btn" id="sbFlash" onclick="toggleFlash()">
+      <div class="sb-icon">
+        <svg id="flashOff" viewBox="0 0 44 44" fill="none">
+          <circle cx="22" cy="22" r="19.5" stroke="rgba(255,255,255,0.80)" stroke-width="1.6"/>
+          <!-- bolt solid white -->
+          <path d="M25 8 L14.5 23 H21.5 L19.5 36 L29.5 21 H22.5 Z" fill="white"/>
+          <!-- × subscript -->
+          <line x1="27.5" y1="30" x2="32"   y2="35.5" stroke="white" stroke-width="1.7" stroke-linecap="round"/>
+          <line x1="32"   y1="30" x2="27.5" y2="35.5" stroke="white" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <svg id="flashOn" viewBox="0 0 44 44" fill="none" style="display:none">
+          <circle cx="22" cy="22" r="19.5" stroke="#f5c21e" stroke-width="1.6"/>
+          <path d="M25 8 L14.5 23 H21.5 L19.5 36 L29.5 21 H22.5 Z" fill="#f5c21e"/>
+        </svg>
+      </div>
+      <span class="sb-lbl">Flash</span>
+    </button>
+
+    <!-- TIMER: stopwatch -->
+    <button class="sb-btn" onclick="toast('Timer')">
+      <div class="sb-icon">
+        <svg viewBox="0 0 44 44" fill="none">
+          <circle cx="22" cy="22" r="19.5" stroke="rgba(255,255,255,0.80)" stroke-width="1.6"/>
+          <!-- stopwatch face -->
+          <circle cx="22" cy="25" r="12" stroke="rgba(255,255,255,0.80)" stroke-width="1.5"/>
+          <!-- crown -->
+          <rect x="18" y="11" width="8" height="2.8" rx="1.4"
+            fill="none" stroke="rgba(255,255,255,0.80)" stroke-width="1.4"/>
+          <!-- hand -->
+          <line x1="22" y1="25" x2="26.5" y2="20.5" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="22" cy="25" r="1.2" fill="white"/>
+        </svg>
+      </div>
+      <span class="sb-lbl">Timer</span>
+    </button>
+
+    <!-- RATIO: standalone rounded rect, NO outer circle -->
+    <button class="sb-btn" onclick="toast('Ratio: 9:16')">
+      <div class="sb-ratio">
+        <svg viewBox="0 0 44 30" width="44" height="30" fill="none">
+          <rect x="1.2" y="1.2" width="41.6" height="27.6" rx="5"
+            stroke="rgba(255,255,255,0.80)" stroke-width="1.6"/>
+          <text x="22" y="20.5" text-anchor="middle" fill="white"
+            font-size="10.5" font-weight="600"
+            font-family="-apple-system,Helvetica Neue,sans-serif"
+            letter-spacing="0.4">9:16</text>
+        </svg>
+      </div>
+      <span class="sb-lbl">Ratio</span>
+    </button>
+
+    <!-- BOOMERANG: ∞ inside circle, NO label -->
+    <button class="sb-btn" onclick="toast('Boomerang')">
+      <div class="sb-icon">
+        <svg viewBox="0 0 44 44" fill="none">
+          <circle cx="22" cy="22" r="19.5" stroke="rgba(255,255,255,0.80)" stroke-width="1.6"/>
+          <!-- left lobe -->
+          <path d="M22 22 C20 19 16.5 17.5 13.5 19.5 C11 21.5 11 25 13.5 26.5 C16.5 28.5 20 27 22 24"
+            stroke="white" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+          <!-- right lobe -->
+          <path d="M22 22 C24 25 27.5 26.5 30.5 24.5 C33 22.5 33 19 30.5 17.5 C27.5 15.5 24 17 22 20"
+            stroke="white" stroke-width="1.9" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+    </button>
+
+    <!-- COLLAPSE chevron — plain, no circle -->
+    <button class="collapse-btn" id="collapseBtn" onclick="toggleSidebar()">
+      <svg id="collapseIcon" viewBox="0 0 24 24">
+        <polyline points="18 15 12 9 6 15"/>
+      </svg>
+    </button>
+
+  </div><!-- /sidebar -->
+
+  <!-- ══ BOTTOM AREA ════════════════════════════════════════════ -->
+  <div class="bottom-area">
+    <div class="mode-row">
+      <button class="gallery-btn" onclick="toast('Gallery')">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </button>
+      <div class="cap-toggle">
+        <button class="ct-btn"        id="ctNormal" onclick="setCapture('normal')">NORMAL</button>
+        <button class="ct-btn active" id="ctVideo"  onclick="setCapture('video')">VIDEO</button>
+      </div>
+      <div class="mode-row-right"></div>
+    </div>
+
+    <!-- Edit · Effects · SHUTTER · Beauty · Filter -->
+    <div class="tool-shutter-row" id="toolRow">
+
+      <button class="tool-btn" onclick="toast('Edit')">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+        </div>
+        <span class="tool-lbl">Edit</span>
+      </button>
+
+      <button class="tool-btn" onclick="toast('Effects')">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            <line x1="9"  y1="9" x2="9.01"  y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+        </div>
+        <span class="tool-lbl">Effects</span>
+      </button>
+
+      <div class="shutter-wrap">
+        <button class="shutter-btn" id="shutterBtn" onclick="captureAction()">
+          <div class="shutter-outer" id="shutterOuter">
+            <div class="shutter-inner" id="shutterInner"></div>
+          </div>
+        </button>
+      </div>
+
+      <button class="tool-btn" onclick="toast('Beauty')">
+        <div class="tool-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+            <line x1="12" y1="12" x2="12" y2="16"/>
+            <line x1="10" y1="14" x2="14" y2="14"/>
+          </svg>
+        </div>
+        <span class="tool-lbl">Beauty</span>
+      </button>
+
+      <button class="tool-btn" onclick="toast('Filter')">
+        <div class="tool-icon">
+          <svg viewBox="0 0 28 28">
+            <circle cx="10" cy="10" r="7" fill="none" stroke="#fff" stroke-width="1.55"/>
+            <circle cx="18" cy="10" r="7" fill="none" stroke="#fff" stroke-width="1.55"/>
+            <circle cx="14" cy="18" r="7" fill="none" stroke="#fff" stroke-width="1.55"/>
+          </svg>
+        </div>
+        <span class="tool-lbl">Filter</span>
+      </button>
+
+    </div>
+
+    <!-- bottom nav -->
+    <div class="bottom-nav">
+      <button class="bn-btn" onclick="toast('Home')">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </button>
+      <button class="bn-btn" onclick="toast('AI')">
+        <div class="ai-box">AI</div>
+      </button>
+      <button class="bn-btn active">
+        <svg viewBox="0 0 24 24">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+      </button>
+      <button class="bn-btn" onclick="toast('Search')">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="bn-btn" onclick="toast('Profile')">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+    </div>
+
+  </div>
+</div><!-- /app -->
+
+<div class="toast" id="toastEl"></div>
+
+<script>
+/* ── STATE ──────────────────────────────────────────────────── */
+let facingMode='environment',topMode='std',capMode='video';
+let flashIsOn=false,isRec=false,sidebarOpen=true;
+let mediaRec=null,recChunks=[],stream=null,toastTimer=null;
+
+/* ── ELEMENTS ───────────────────────────────────────────────── */
+const camEl        = document.getElementById('cam');
+const flashEl      = document.getElementById('flash');
+const app          = document.getElementById('app');
+const musicBanner  = document.getElementById('musicBanner');
+const hiresBanner  = document.getElementById('hiresBanner');
+const sbDuration   = document.getElementById('sbDuration');
+const sidebar      = document.getElementById('sidebar');
+const collapseIcon = document.getElementById('collapseIcon');
+const shutterOuter = document.getElementById('shutterOuter');
+const shutterInner = document.getElementById('shutterInner');
+const toastEl      = document.getElementById('toastEl');
+const flashOffSvg  = document.getElementById('flashOff');
+const flashOnSvg   = document.getElementById('flashOn');
+const ctNormal     = document.getElementById('ctNormal');
+const ctVideo      = document.getElementById('ctVideo');
+
+/* ── INIT ───────────────────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded',()=>{
+  showPermScreen();
+  applyCapMode();
+  applyTopMode();
+});
+
+/* ── PERMISSION SCREEN ──────────────────────────────────────── */
+function showPermScreen(){
+  const o=document.createElement('div');
+  o.id='permOverlay';
+  o.style.cssText='position:fixed;inset:0;z-index:9999;background:#0d0d0d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px 30px;text-align:center;';
+  o.innerHTML=`
+    <div style="font-size:58px">📷</div>
+    <h2 style="color:#fff;font-size:20px;font-weight:700;line-height:1.3">Allow Camera &<br>Microphone Access</h2>
+    <p style="color:rgba(255,255,255,.48);font-size:13px;line-height:1.6;max-width:260px">B612 needs your camera and microphone to take photos and record videos.</p>
+    <button id="grantBtn" style="margin-top:4px;background:#00d98b;color:#fff;border:none;border-radius:28px;font-size:15px;font-weight:700;padding:14px 48px;cursor:pointer;">Allow Access</button>
+    <div id="permErr" style="color:#e8395e;font-size:12px;display:none;line-height:1.55;max-width:270px;padding:10px 14px;background:rgba(232,57,94,.10);border-radius:10px;"></div>
+    <p style="color:rgba(255,255,255,.22);font-size:11px">Tap <b style="color:rgba(255,255,255,.4)">Allow</b> when your browser asks</p>
+  `;
+  document.body.appendChild(o);
+  const btn=document.getElementById('grantBtn');
+  const err=document.getElementById('permErr');
+  btn.addEventListener('click',async()=>{
+    btn.textContent='Opening…';btn.style.opacity='.6';btn.style.pointerEvents='none';err.style.display='none';
+    try{
+      await startCam();
+      o.style.transition='opacity .3s';o.style.opacity='0';
+      setTimeout(()=>o.remove(),320);
+    }catch(e){
+      err.style.display='block';
+      if(e.name==='NotAllowedError'||e.name==='PermissionDeniedError')
+        err.textContent='❌ Permission denied. Go to browser Settings → Site Permissions → Camera & Microphone → Allow, then reload.';
+      else if(e.name==='NotFoundError')
+        err.textContent='❌ No camera or microphone found on this device.';
+      else if(e.name==='NotReadableError')
+        err.textContent='❌ Camera in use by another app. Close it and try again.';
+      else if(e.name==='SecurityError')
+        err.textContent='❌ Must open over HTTPS or localhost for camera access.';
+      else
+        err.textContent='❌ '+(e.message||'Could not access camera.');
+      btn.textContent='Try Again';btn.style.opacity='1';btn.style.pointerEvents='auto';
+    }
+  });
+}
+
+/* ── CAMERA ─────────────────────────────────────────────────── */
+async function startCam(){
+  if(stream)stream.getTracks().forEach(t=>t.stop());
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode,width:{ideal:1920},height:{ideal:1080}},audio:true
+    });
+  }catch(e){
+    if(e.name==='OverconstrainedError')
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode},audio:true});
+    else throw e;
+  }
+  camEl.srcObject=stream;camEl.muted=true;
+}
+
+function flipCam(){
+  facingMode=facingMode==='environment'?'user':'environment';
+  startCam()
+    .then(()=>toast(facingMode==='user'?'Front camera':'Rear camera'))
+    .catch(()=>toast('Could not flip camera'));
+}
+
+/* ── TOP MODE ────────────────────────────────────────────────── */
+function setMode(m){
+  topMode=m;
+  ['Std','Hires','Iphone'].forEach(x=>document.getElementById('btn'+x).classList.remove('active'));
+  document.getElementById('btn'+m[0].toUpperCase()+m.slice(1)).classList.add('active');
+  applyTopMode();
+}
+function applyTopMode(){
+  musicBanner.classList.remove('show');hiresBanner.classList.remove('show');app.classList.remove('iphone-mode');
+  if(topMode==='iphone'){app.classList.add('iphone-mode');toast('iPhone mode');}
+  else if(topMode==='hires'){hiresBanner.classList.add('show');toast('Hi-res mode');}
+  if(capMode==='video'&&topMode!=='iphone')musicBanner.classList.add('show');
+}
+
+/* ── CAPTURE MODE ────────────────────────────────────────────── */
+function setCapture(m){
+  capMode=m;
+  ctNormal.classList.toggle('active',m==='normal');
+  ctVideo.classList.toggle('active',m==='video');
+  applyCapMode();
+}
+function applyCapMode(){
+  if(capMode==='video'){
+    shutterOuter.className='shutter-outer';shutterInner.className='shutter-inner';
+    sbDuration.style.display='flex';
+    if(topMode!=='iphone')musicBanner.classList.add('show');
+    if(isRec)stopRec();
+  }else{
+    shutterOuter.className='shutter-outer';shutterInner.className='shutter-inner';
+    sbDuration.style.display='none';
+    musicBanner.classList.remove('show');
+    if(isRec)stopRec();
+  }
+}
+
+/* ── SHUTTER ─────────────────────────────────────────────────── */
+function captureAction(){capMode==='normal'?doPhoto():(isRec?stopRec():startRec());}
+
+function doPhoto(){
+  if(!stream){toast('Camera not ready');return;}
+  flashBurst();
+  const track=stream.getVideoTracks()[0];
+  const s=track?track.getSettings():{};
+  const w=s.width||camEl.videoWidth||1280,h=s.height||camEl.videoHeight||720;
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  c.getContext('2d').drawImage(camEl,0,0,w,h);
+  c.toBlob(blob=>{
+    if(!blob)return;
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download='b612_'+Date.now()+'.jpg';a.click();URL.revokeObjectURL(url);
+    toast('📸 Photo saved!');
+  },'image/jpeg',.95);
+}
+function flashBurst(){flashEl.style.opacity='1';setTimeout(()=>{flashEl.style.opacity='0';},100);}
+
+function startRec(){
+  if(!stream){toast('Camera not ready');return;}
+  recChunks=[];
+  const types=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4',''];
+  const mime=types.find(t=>t===''||MediaRecorder.isTypeSupported(t));
+  try{mediaRec=new MediaRecorder(stream,mime?{mimeType:mime}:{});}
+  catch(e){toast('Recording not supported');return;}
+  mediaRec.ondataavailable=e=>{if(e.data&&e.data.size>0)recChunks.push(e.data);};
+  mediaRec.onstop=()=>{
+    const blob=new Blob(recChunks,{type:mime||'video/webm'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download='b612_video_'+Date.now()+'.webm';a.click();URL.revokeObjectURL(url);
+    toast('🎬 Video saved!');
+  };
+  mediaRec.onerror=()=>{isRec=false;applyCapMode();};
+  mediaRec.start(200);isRec=true;
+  shutterOuter.className='shutter-outer rec';shutterInner.className='shutter-inner rec';
+  toast('🔴 Recording…');
+}
+function stopRec(){
+  if(mediaRec&&isRec)mediaRec.stop();
+  isRec=false;
+  shutterOuter.className='shutter-outer';shutterInner.className='shutter-inner';
+}
+
+/* ── FLASH ───────────────────────────────────────────────────── */
+function toggleFlash(){
+  flashIsOn=!flashIsOn;
+  flashOffSvg.style.display=flashIsOn?'none':'block';
+  flashOnSvg.style.display=flashIsOn?'block':'none';
+  toast(flashIsOn?'Flash ON':'Flash OFF');
+  if(stream){
+    const t=stream.getVideoTracks()[0];
+    if(t){
+      const caps=typeof t.getCapabilities==='function'?t.getCapabilities():{};
+      if(caps.torch)t.applyConstraints({advanced:[{torch:flashIsOn}]}).catch(()=>{});
+    }
+  }
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────────────── */
+function toggleSidebar(){
+  sidebarOpen=!sidebarOpen;
+  sidebar.querySelectorAll('.sb-btn').forEach(b=>{b.style.display=sidebarOpen?'flex':'none';});
+  collapseIcon.innerHTML=sidebarOpen?'<polyline points="18 15 12 9 6 15"/>':'<polyline points="6 9 12 15 18 9"/>';
+}
+
+/* ── TOAST ───────────────────────────────────────────────────── */
+function toast(msg){
+  clearTimeout(toastTimer);
+  toastEl.textContent=msg;toastEl.classList.add('show');
+  toastTimer=setTimeout(()=>toastEl.classList.remove('show'),2000);
+}
+</script>
+</body>
+</html>
