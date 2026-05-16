@@ -1,0 +1,154 @@
+:root {
+    --teams-dark: #1b1b1b;
+    --teams-card: #292929;
+    --teams-purple: #5b5fc7;
+    --teams-border: #333;
+    --text-muted: #adadad;
+    --active-blue-bg: #2b2d4e;
+    --active-blue-text: #8b8fd8;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { background: var(--teams-dark); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; }
+
+/* ====================== LOBBY STYLES ====================== */
+.lobby-center-container { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    height: 100vh; 
+    padding: 20px; 
+}
+
+/* Move Logo to Top Center (PC and Mobile) */
+.lobby-header-exact { 
+    text-align: center; 
+    margin-top: 10px; /* Moves logo to very top center */
+    margin-bottom: 30px; 
+    width: 100%;
+}
+
+.teams-logo-exact { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px; }
+.logo-grid-exact { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+.logo-grid-exact span { width: 14px; height: 14px; background: var(--teams-purple); border-radius: 2px; }
+.logo-text-exact { font-weight: 600; font-size: 18px; }
+.lobby-title-exact { font-size: 20px; font-weight: 600; }
+
+.lobby-split-view { display: flex; gap: 30px; width: 100%; max-width: 1000px; justify-content: center; }
+
+/* Desktop Preview & Audio */
+.preview-box-exact { width: 480px; background: #000; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
+.video-container-exact { height: 280px; position: relative; background: #1a1a1a; }
+#lobbyVideo, #meetVideo { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+.avatar-overlay-exact { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #1a1a1a; }
+.av-circle { width: 80px; height: 80px; border-radius: 50%; background: #6b3fa0; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 600; }
+
+.audio-selection-exact { width: 360px; background: #262626; border-radius: 10px; padding: 20px; }
+.a-card-exact { display: flex; gap: 15px; padding: 15px; border-radius: 8px; cursor: pointer; border: 2.5px solid transparent; margin-bottom: 10px; }
+.a-card-exact.active { border-color: var(--teams-purple); background: rgba(91, 95, 199, 0.05); }
+
+/* ====================== MEETING TASKBAR ====================== */
+.taskbar-exact { 
+    height: 72px; 
+    background: #1c1c1c; 
+    border-bottom: 1px solid #252525; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 0 20px; 
+    flex-shrink: 0; 
+}
+
+.tb-btn { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    background: none; 
+    border: none; 
+    color: #ccc; 
+    font-size: 10.5px; 
+    min-width: 65px; 
+    transition: 0.2s; 
+    height: 60px; 
+}
+
+.tb-btn i { font-size: 18px; margin-bottom: 4px; color: #ffffff; }
+
+.tb-btn.on, .tb-btn.mic-live, .tb-btn.share-active { 
+    background: var(--active-blue-bg) !important; 
+    color: var(--active-blue-text) !important; 
+    border: 1.5px solid var(--teams-purple) !important; 
+    border-radius: 8px; 
+}
+
+/* ====================== MOBILE OVERRIDES ====================== */
+@media (max-width: 768px) {
+    /* Stack elements vertically */
+    .lobby-split-view {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        overflow-y: auto;
+    }
+
+    .preview-box-exact {
+        width: 100% !important;
+        max-width: 480px;
+        order: 1; /* Moves Camera Upwards */
+    }
+
+    .audio-selection-exact {
+        width: 100% !important;
+        max-width: 480px;
+        order: 2; /* Moves Audio Downwards */
+    }
+
+    /* Prevent Overlap: Space out taskbar items */
+    .taskbar-exact {
+        padding: 0 5px;
+        justify-content: space-evenly;
+    }
+
+    .tb-btn {
+        min-width: 48px; /* Touch friendly but prevents overlapping icons */
+        padding: 0;
+    }
+
+    .tb-btn span {
+        display: none; /* Hide text to avoid horizontal overlap */
+    }
+
+    .tb-btn i {
+        font-size: 20px; /* Keep icons large and readable */
+    }
+
+    .r-panel.open {
+        width: 100%;
+        position: absolute;
+        inset: 0;
+        z-index: 1000;
+        border-left: none;
+    }
+}
+
+/* Fix for mobile input zooming */
+input, select { font-size: 16px !important; }
+
+/* ====================== ANIMATIONS & UI ====================== */
+.meet-body { flex: 1; display: flex; overflow: hidden; position: relative; }
+.stage { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #141414; }
+.av-circle-large { width: 140px; height: 140px; border-radius: 50%; background: #6b3fa0; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+
+.r-panel { width: 0; background: #1e1e1e; border-left: 1px solid #262626; transition: width 0.3s ease; overflow: hidden; display: flex; flex-direction: column; }
+.r-panel.open { width: 320px; }
+.rp-head { padding: 15px; border-bottom: 1px solid #262626; font-weight: 600; display: flex; justify-content: space-between; }
+.rp-body { padding: 15px; color: #adadad; font-size: 13px; flex: 1; overflow-y: auto; }
+
+.react-panel-popup { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); background: #232323; padding: 12px; border-radius: 12px; display: flex; gap: 15px; border: 1px solid #333; z-index: 100; }
+.floating-emoji-anim { position: absolute; bottom: 20px; font-size: 45px; animation: floatUp 3s forwards; pointer-events: none; z-index: 1000; }
+@keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-350px) scale(1.5); } }
+
+.lobby-footer-exact { margin-top: 30px; display: flex; gap: 15px; }
+.teams-btn-join { background: var(--teams-purple); color: white; padding: 10px 25px; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; }
+.teams-btn-cancel { background: #333; color: white; padding: 10px 25px; border: none; border-radius: 4px; cursor: pointer; }
