@@ -1,0 +1,351 @@
+:root {
+    --bg: #000;
+    --footer-bg: #1a1a1c;
+    --text: #ffffff;
+    --text-muted: #a2a2a2;
+    --zoom-green: #24be3e;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    height: 100vh;
+    height: -webkit-fill-available;   /* Important for mobile */
+    overflow: hidden;
+    touch-action: manipulation;
+}
+
+/* Disable pinch zoom */
+.zoom-app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: -webkit-fill-available;
+}
+
+/* ====================== HEADER ====================== */
+.top-header {
+    height: 48px;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    border-bottom: 1px solid #333;
+    z-index: 100;
+}
+
+.brand {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.info-pill {
+    background: #2a2a2a;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ====================== MAIN VIDEO AREA ====================== */
+.main-layout {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+#video-container {
+    flex: 1;
+    position: relative;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#video-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+    height: 100%;
+}
+
+#local-video {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+    background: #111;
+    transform: scaleX(-1);
+}
+
+/* Speaker Name */
+.speaker-name-tag {
+    position: absolute;
+    bottom: 35px;
+    left: 35px;
+    background: rgba(0,0,0,0.7);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    z-index: 10;
+}
+
+/* Start Video Overlay */
+.start-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    border-radius: 12px;
+}
+
+.overlay-content {
+    text-align: center;
+    color: white;
+}
+
+.overlay-content h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+.overlay-content p {
+    margin-bottom: 25px;
+    color: #ccc;
+    font-size: 16px;
+}
+
+#start-video-btn {
+    background: #24be3e;
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    font-size: 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+}
+
+#start-video-btn:hover {
+    background: #1ea832;
+}
+
+/* Reaction Panel */
+.reaction-window {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f1f1f;
+    border: 1px solid #444;
+    border-radius: 12px;
+    padding: 14px 18px;
+    width: 340px;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 200;
+}
+
+.emoji-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.action-row {
+    display: flex;
+    gap: 8px;
+}
+
+.action-row button {
+    flex: 1;
+    padding: 10px;
+    background: #333;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+}
+
+/* ====================== FOOTER - MOBILE OPTIMIZED ====================== */
+.zoom-footer {
+    background: var(--footer-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px 12px 12px;
+    border-top: 1px solid #333;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+    min-height: 90px;
+}
+
+/* Safe Area for iPhone Notch & Android Navigation Bar */
+@supports (padding: env(safe-area-inset-bottom)) {
+    .zoom-footer {
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    }
+}
+
+.footer-left, .footer-center, .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+    font-size: 10.5px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px 4px;
+    border-radius: 8px;
+    touch-action: manipulation;
+}
+
+.nav-item i {
+    font-size: 26px;
+    margin-bottom: 3px;
+}
+
+.nav-item:hover {
+    background: #2a2a2a;
+}
+
+.end-btn {
+    background: #ff3b30;
+    color: white;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    min-width: 80px;
+}
+
+/* ====================== SIDEBAR ====================== */
+.sidebar {
+    width: 0;
+    background: white;
+    color: black;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    border-left: 1px solid #ddd;
+    z-index: 150;
+}
+
+.sidebar.open {
+    width: 340px;
+}
+
+.sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+}
+
+.close-icon {
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.p-item {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.p-avatar {
+    width: 40px;
+    height: 40px;
+    background: #0e71eb;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Chat Styles */
+.chat-banner {
+    padding: 12px 16px;
+    background: #f0f0f0;
+    font-size: 13px;
+    color: #555;
+    border-bottom: 1px solid #ddd;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    background: #fafafa;
+}
+
+.chat-input-area {
+    padding: 12px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    gap: 8px;
+}
+
+.chat-input-area textarea {
+    flex: 1;
+    resize: none;
+    height: 50px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;   /* Prevent iOS zoom */
+}
+
+.chat-input-area button {
+    padding: 0 16px;
+    background: #0e71eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Prevent zoom on inputs */
+input, textarea, select {
+    font-size: 16px !important;
+}
