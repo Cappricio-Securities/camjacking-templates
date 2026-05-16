@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Zoom Workplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="zoom-app">
+        <!-- Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <span class="brand">zoom <small>Workplace</small></span>
+                <div class="info-pill">
+                    <i class="fas fa-info-circle"></i>
+                    <span>User's Meeting</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <i class="fas fa-shield-check" style="color: #24be3e;"></i>
+                <div class="nav-item-top">View</div>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <main id="video-container">
+                <div id="video-wrapper">
+                    <video id="local-video" autoplay playsinline muted style="display: none;"></video>
+                    
+                    <!-- Enhanced Start Video Overlay -->
+                    <div id="start-video-overlay" class="start-overlay">
+                        <div class="overlay-content">
+                            <div class="welcome-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h2>Welcome to the Meeting</h2>
+                            <p>Click below to start your camera and microphone</p>
+                            <button id="start-video-btn" onclick="startLocalStream()">
+                                <i class="fas fa-video"></i> Start Video
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="speaker-name-tag">User</div>
+                </div>
+
+                <!-- Reaction Panel -->
+                <div class="reaction-window" id="reactionPanel">
+                    <div class="emoji-row">
+                        <span onclick="sendReaction('👏')">👏</span>
+                        <span onclick="sendReaction('👍')">👍</span>
+                        <span onclick="sendReaction('😂')">😂</span>
+                        <span onclick="sendReaction('😮')">😮</span>
+                        <span onclick="sendReaction('❤️')">❤️</span>
+                        <span onclick="sendReaction('🎉')">🎉</span>
+                    </div>
+                    <div class="action-row">
+                        <button onclick="sendReaction('✋')">✋ Raise Hand</button>
+                        <button onclick="sendReaction('⌛')">⌛ Be right back</button>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Sidebar -->
+            <aside id="right-sidebar" class="sidebar">
+                <div class="sidebar-header">
+                    <span id="sidebar-title">Participants (1)</span>
+                    <i class="fas fa-xmark close-icon" onclick="closeSidebar()"></i>
+                </div>
+                
+                <div class="sidebar-content" id="participants-section">
+                    <div class="p-item">
+                        <div class="p-avatar">U</div>
+                        <span>User (Host, me)</span>
+                        <div class="p-status-icons">
+                            <i class="fas fa-microphone"></i>
+                            <i class="fas fa-video"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-content" id="chat-section" style="display: none; flex-direction: column;">
+                    <div class="chat-banner">
+                        Messages addressed to "Meeting Group Chat" will appear here.
+                    </div>
+                    <div class="chat-messages" id="messages-area"></div>
+                    <div class="chat-input-area">
+                        <textarea id="chat-input" placeholder="Type message here..."></textarea>
+                        <button onclick="sendChatMessage()">Send</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Footer -->
+        <footer class="zoom-footer">
+            <div class="footer-left">
+                <div class="nav-item" onclick="toggleMic()">
+                    <i id="mic-icon" class="fas fa-microphone"></i>
+                    <span id="mic-text">Mute</span>
+                </div>
+                <div class="nav-item" onclick="toggleCamera()">
+                    <i id="cam-icon" class="fas fa-video"></i>
+                    <span id="cam-text">Stop Video</span>
+                </div>
+            </div>
+
+            <div class="footer-center">
+                <div class="nav-item" onclick="showParticipants()">
+                    <i class="fas fa-users"></i>
+                    <span class="badge" id="participant-count">1</span>
+                    <span>Participants</span>
+                </div>
+                <div class="nav-item" onclick="showChat()">
+                    <i class="fas fa-comment"></i>
+                    <span>Chat</span>
+                </div>
+                <div class="nav-item" onclick="toggleReactionPanel()">
+                    <i class="fas fa-heart"></i>
+                    <span>React</span>
+                </div>
+                <div class="nav-item" onclick="startScreenShare()">
+                    <i id="share-icon" class="fas fa-arrow-up-from-bracket" style="color:#24be3e"></i>
+                    <span id="share-text">Share</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-shield-halved"></i>
+                    <span>Host tools</span>
+                </div>
+            </div>
+
+            <div class="footer-right">
+                <button class="end-btn" onclick="endMeeting()">End</button>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

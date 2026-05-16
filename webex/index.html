@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Webex – Hari Krishnan's Personal Room</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+:root{
+  --bg:#0d0d10;--surface:#18181e;--surface2:#222229;--surface3:#2c2c36;
+  --border:rgba(255,255,255,0.07);--text:#e6e6ea;--muted:#686878;
+  --accent:#1a6bff;--green:#22c55e;--red:#ef4444;--amber:#f59e0b;
+  --topbar:52px;--toolbar:70px;--r:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+svg.ic{width:16px;height:16px;flex-shrink:0}
+
+/* PRE-MEETING */
+#premeeting{display:none;flex-direction:column;height:100vh;background:var(--bg)}
+.pm-bar{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--border)}
+.pm-back{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;padding:2px 4px}
+.pm-bar-title{font-size:15px;font-weight:600}
+.pm-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:28px 20px;overflow-y:auto}
+.pm-preview-box{width:100%;max-width:360px;aspect-ratio:4/3;background:var(--surface2);border-radius:16px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.pm-avatar-lg{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#1a3870,#2857c0);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:600;color:#8ab4ff}
+.pm-self-label{position:absolute;bottom:12px;left:14px;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);border-radius:16px;padding:3px 12px;font-size:12px;color:#ccc}
+.pm-toggles{display:flex;gap:28px;justify-content:center;align-items:flex-start}
+.pm-toggle-col{display:flex;flex-direction:column;align-items:center;gap:8px}
+.pm-toggle-btn{width:58px;height:58px;border-radius:50%;border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.pm-toggle-btn.st-off{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.35)}
+.pm-toggle-btn.st-on{background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.35)}
+.pm-toggle-btn.st-neu{background:var(--surface2)}
+.pm-toggle-lbl{font-size:11px;color:var(--muted);white-space:nowrap}
+.pm-audio-row{width:100%;max-width:360px;background:var(--surface2);border:1px solid var(--border);border-radius:26px;padding:12px 18px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.pm-audio-row span{font-size:13px;flex:1}
+.pm-audio-row .arr{color:var(--muted);font-size:12px}
+.pm-join{width:100%;max-width:360px;background:var(--accent);border:none;color:#fff;font-family:inherit;font-size:15px;font-weight:600;padding:15px;border-radius:30px;cursor:pointer;transition:background .15s}
+.pm-join:hover{background:#1558d4}
+
+/* MAIN MEETING */
+#meeting{display:none;flex-direction:column;height:100vh;overflow:hidden}
+
+/* TOPBAR */
+.topbar{height:var(--topbar);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;z-index:20}
+.topbar-left{display:flex;align-items:center;min-width:40px}
+.topbar-title{flex:1;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.topbar-right{display:flex;gap:8px;align-items:center}
+.tb-pill{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);font-size:12px;font-family:inherit;padding:6px 13px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap}
+.tb-pill:hover{background:rgba(255,255,255,.1);color:var(--text)}
+.tb-pill.blue{background:rgba(26,107,255,.18);border-color:rgba(26,107,255,.4);color:#7ab2ff}
+
+/* WORKSPACE */
+.workspace{flex:1;display:flex;min-height:0;position:relative}
+
+/* LEFT: user tile (like screenshot - ~38% width, card style) */
+.user-tile{
+  width:38%;max-width:560px;min-width:200px;
+  background:var(--surface2);
+  margin:12px 6px 12px 12px;
+  border-radius:var(--r);
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;flex-shrink:0;
+}
+.user-tile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;border-radius:var(--r)}
+.user-tile video.live{display:block}
+.user-tile-name{font-size:clamp(15px,2.5vw,24px);font-weight:500;color:#ccc;letter-spacing:.01em;z-index:1}
+.user-tile-label{position:absolute;bottom:10px;left:12px;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);border-radius:14px;padding:3px 11px;font-size:11px;color:#ccc;display:none;align-items:center;gap:5px;z-index:5}
+.user-tile-label.show{display:flex}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* RIGHT: waiting area */
+.content-area{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:20px}
+.waiting-text{font-size:15px;color:var(--muted);font-weight:400;margin-bottom:4px}
+.invite-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--text);font-size:13px;font-family:inherit;padding:10px 24px;border-radius:24px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s;min-width:190px;justify-content:center}
+.invite-btn:hover{background:rgba(255,255,255,.12)}
+.copy-btn{background:transparent;border:1px solid rgba(255,255,255,.13);color:var(--muted);font-size:12px;font-family:inherit;padding:9px 22px;border-radius:24px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s;min-width:190px;justify-content:center}
+.copy-btn:hover{color:var(--text);background:rgba(255,255,255,.07)}
+
+/* SIDE PANEL */
+.side-panel{width:300px;background:var(--surface);border-left:1px solid var(--border);display:none;flex-direction:column;flex-shrink:0}
+.side-panel.open{display:flex}
+.sp-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sp-head-title{font-size:14px;font-weight:600}
+.sp-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 6px;border-radius:6px}
+.sp-close:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.sp-body{flex:1;overflow-y:auto}
+.sp-body::-webkit-scrollbar{width:4px}
+.sp-body::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:4px}
+.sec-tag{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;padding:10px 18px 4px}
+.pax-row{display:flex;align-items:center;gap:10px;padding:9px 18px}
+.pax-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1a3870,#2857c0);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#7ab2ff;flex-shrink:0}
+.pax-name{font-size:13px;font-weight:500}
+.pax-role{font-size:11px;color:var(--muted);margin-top:1px}
+.chat-note{background:rgba(26,107,255,.1);border:1px solid rgba(26,107,255,.2);border-radius:8px;margin:12px;padding:10px 14px;font-size:12px;color:#7ab2ff;line-height:1.5}
+.chat-empty{text-align:center;padding:32px 18px}
+.chat-empty-ico{font-size:28px;margin-bottom:8px}
+.chat-empty-h{font-size:14px;font-weight:600;margin-bottom:4px}
+.chat-empty-s{font-size:12px;color:var(--muted)}
+.chat-msgs{display:flex;flex-direction:column;gap:10px;padding:10px 14px}
+.chat-msg{background:var(--surface2);border-radius:10px;padding:10px 12px}
+.chat-msg-from{font-size:11px;font-weight:600;color:#7ab2ff;margin-bottom:3px}
+.chat-msg-body{font-size:13px;line-height:1.5}
+.chat-input-row{padding:12px;border-top:1px solid var(--border);flex-shrink:0;display:none}
+.chat-flex{display:flex;gap:8px;align-items:center}
+.chat-field{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:22px;padding:9px 16px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s}
+.chat-field:focus{border-color:rgba(26,107,255,.5)}
+.chat-field::placeholder{color:var(--muted)}
+.chat-send-btn{width:36px;height:36px;border-radius:50%;background:var(--accent);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.chat-send-btn:hover{background:#1558d4}
+
+/* FLOAT REACTIONS */
+.float-box{position:absolute;bottom:80px;left:50%;transform:translateX(-60px);pointer-events:none;z-index:30}
+.float-em{position:absolute;font-size:28px;animation:floatUp 2.2s ease-out forwards;opacity:0}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0)}80%{opacity:.8}100%{opacity:0;transform:translateY(-110px)}}
+
+/* TOOLBAR */
+.toolbar{height:var(--toolbar);background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:0 12px;gap:5px;flex-shrink:0;z-index:20;position:relative}
+.t-group{display:flex;align-items:center;flex-direction:column;gap:0}
+.t-row{display:flex;align-items:center}
+.t-icon-lbl{font-size:10px;color:var(--muted);display:none;text-align:center;margin-top:3px;line-height:1}
+.tool-pill{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:13px;font-family:inherit;height:44px;padding:0 15px;border-radius:22px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s;white-space:nowrap}
+.tool-pill:hover{background:rgba(255,255,255,.09)}
+.tool-pill.st-on{background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.38);color:#4ade80}
+.tool-pill.st-off{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.32);color:#f87171}
+.tool-pill.st-amb{background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.38);color:#fbbf24}
+.caret-pill{background:var(--surface2);border:1px solid var(--border);color:var(--muted);height:44px;padding:0 9px;border-radius:22px;cursor:pointer;display:flex;align-items:center;font-size:11px;margin-left:-5px;transition:color .15s}
+.caret-pill:hover{color:var(--text)}
+.end-circle{width:44px;height:44px;border-radius:50%;background:var(--red);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0}
+.end-circle:hover{background:#dc2626}
+.tb-right{position:absolute;right:14px;display:flex;gap:6px}
+.ic-btn{width:42px;height:42px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ic-btn:hover{background:rgba(255,255,255,.09);color:var(--text)}
+.ic-btn.active{background:rgba(26,107,255,.2);border-color:rgba(26,107,255,.45);color:#7ab2ff}
+
+/* POPUPS */
+.popup{display:none;position:fixed;background:var(--surface);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:14px;z-index:400;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.popup.open{display:block}
+.r-grid{display:grid;grid-template-columns:repeat(4,44px);gap:6px}
+.r-btn{width:44px;height:44px;background:none;border:none;font-size:22px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s}
+.r-btn:hover{background:rgba(255,255,255,.09)}
+.r-foot{text-align:center;font-size:11px;color:var(--muted);margin-top:10px;padding-top:8px;border-top:1px solid var(--border);cursor:pointer}
+.r-foot:hover{color:var(--text)}
+
+.more-drop{display:none;position:fixed;background:var(--surface);border:1px solid rgba(255,255,255,.1);border-radius:14px;z-index:400;min-width:230px;box-shadow:0 20px 60px rgba(0,0,0,.7);overflow:hidden}
+.more-drop.open{display:block}
+.m-tag{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;padding:10px 18px 4px}
+.m-row{display:flex;align-items:center;gap:12px;padding:11px 18px;font-size:13px;cursor:pointer;transition:background .12s}
+.m-row:hover{background:rgba(255,255,255,.05)}
+.tog-pill{width:36px;height:20px;border-radius:10px;background:var(--surface3);margin-left:auto;position:relative;transition:background .2s;flex-shrink:0}
+.tog-pill.on{background:var(--accent)}
+.tog-thumb{width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:transform .2s}
+.tog-pill.on .tog-thumb{transform:translateX(16px)}
+
+/* TOAST */
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid rgba(255,255,255,.1);color:var(--text);font-size:13px;padding:10px 22px;border-radius:22px;pointer-events:none;opacity:0;transition:opacity .2s;z-index:9999;white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.5)}
+.toast.show{opacity:1}
+
+/* END OVERLAY */
+.end-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);align-items:center;justify-content:center;z-index:9000}
+.end-overlay.show{display:flex}
+.end-box{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:38px 44px;text-align:center;max-width:340px;width:90%}
+.end-box h2{font-size:20px;font-weight:600;margin-bottom:8px}
+.end-box p{color:var(--muted);font-size:13px;margin-bottom:26px}
+.end-actions{display:flex;gap:10px;justify-content:center}
+.rejoin-btn{background:var(--accent);border:none;color:#fff;font-family:inherit;font-size:14px;padding:10px 28px;border-radius:22px;cursor:pointer;transition:background .15s}
+.rejoin-btn:hover{background:#1558d4}
+.leave-btn{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#f87171;font-family:inherit;font-size:14px;padding:10px 28px;border-radius:22px;cursor:pointer}
+
+/* MOBILE SHEET */
+.sheet-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.6)}
+.sheet-overlay.open{display:block}
+.sheet-panel{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-radius:20px 20px 0 0;max-height:72vh;display:flex;flex-direction:column;z-index:601}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+.sheet-title{font-size:15px;font-weight:600}
+.sheet-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer}
+.sheet-body{flex:1;overflow-y:auto;padding:12px 20px}
+.sheet-chat-inp{padding:12px 20px;border-top:1px solid var(--border);display:none}
+.sheet-chat-flex{display:flex;gap:8px}
+
+/* ═══════════════════════════════════
+   MOBILE ≤ 680px
+═══════════════════════════════════ */
+@media(max-width:680px){
+  /* Workspace stacks: tile top, invite area bottom */
+  .workspace{flex-direction:column}
+  .user-tile{
+    width:auto;max-width:none;min-width:0;
+    height:42%;
+    margin:10px 10px 4px 10px;
+    border-radius:var(--r);
+  }
+  .content-area{flex:1;padding:10px 16px;gap:10px}
+  .invite-btn,.copy-btn{min-width:0;width:100%;max-width:300px}
+  .waiting-text{font-size:14px}
+
+  /* No side panel on mobile */
+  .side-panel{display:none !important}
+
+  /* Toolbar: circular icon buttons, no text pills */
+  .toolbar{
+    height:auto;
+    padding:10px 6px 14px;
+    justify-content:space-evenly;
+    gap:2px;
+  }
+  /* show icon labels */
+  .t-icon-lbl{display:block}
+  /* hide desktop pill text */
+  .pill-lbl{display:none}
+  /* make buttons circular */
+  .tool-pill{
+    width:50px;height:50px;
+    border-radius:50%;
+    padding:0;
+    justify-content:center;
+  }
+  .caret-pill{display:none}
+  .end-circle{width:50px;height:50px}
+  /* desktop right icons hidden */
+  .tb-right{display:none}
+  /* hide layout btn on mobile */
+  .tb-layout-btn{display:none !important}
+
+  /* popups full width at bottom */
+  .more-drop{
+    position:fixed;
+    bottom:0 !important; /* above safe area */
+    left:0 !important;right:0 !important;
+    width:100%;
+    border-radius:20px 20px 0 0;
+    border-bottom:none;
+    max-height:70vh;
+    overflow-y:auto;
+  }
+  .popup{
+    position:fixed;
+    bottom:0 !important;
+    left:0 !important;right:0 !important;
+    width:100%;
+    border-radius:20px 20px 0 0;
+    border-bottom:none;
+  }
+  .r-grid{grid-template-columns:repeat(6,44px);justify-content:center}
+}
+@media(max-width:380px){
+  .tool-pill{width:44px;height:44px}
+  .end-circle{width:44px;height:44px}
+  .t-icon-lbl{font-size:9px}
+}
+</style>
+</head>
+<body>
+
+<!-- PRE-MEETING (shown on mobile) -->
+<div id="premeeting">
+  <div class="pm-bar">
+    <button class="pm-back" onclick="goBack()">←</button>
+    <span class="pm-bar-title">Hari Krishnan's meeting</span>
+  </div>
+  <div class="pm-body">
+    <div class="pm-preview-box">
+      <div class="pm-avatar-lg" id="pm-av">HK</div>
+      <video id="pm-video" autoplay muted playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:16px"></video>
+      <div class="pm-self-label">Hari Krishnan</div>
+    </div>
+    <div class="pm-toggles">
+      <div class="pm-toggle-col">
+        <button class="pm-toggle-btn st-off" id="pm-mic" onclick="pmToggleMic()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0014 0"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="3" y1="3" x2="21" y2="21"/></svg>
+        </button>
+        <span class="pm-toggle-lbl" id="pm-mic-lbl">Unmute</span>
+      </div>
+      <div class="pm-toggle-col">
+        <button class="pm-toggle-btn st-off" id="pm-cam" onclick="pmToggleCam()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/><line x1="3" y1="3" x2="21" y2="21"/></svg>
+        </button>
+        <span class="pm-toggle-lbl" id="pm-cam-lbl">Start video</span>
+      </div>
+      <div class="pm-toggle-col">
+        <button class="pm-toggle-btn st-neu" onclick="toast('Backgrounds coming soon')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="14" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </button>
+        <span class="pm-toggle-lbl">Background</span>
+      </div>
+      <div class="pm-toggle-col">
+        <button class="pm-toggle-btn st-neu" onclick="toast('Settings')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        </button>
+        <span class="pm-toggle-lbl">Settings</span>
+      </div>
+    </div>
+    <div class="pm-audio-row" onclick="toast('Audio options')">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <span>Use Internet for audio</span>
+      <span class="arr">▾</span>
+    </div>
+    <button class="pm-join" onclick="joinMeeting()">Join</button>
+  </div>
+</div>
+
+<!-- MAIN MEETING -->
+<div id="meeting">
+  <div class="topbar">
+    <div class="topbar-left">
+      <button id="mob-back" style="display:none;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px 8px" onclick="endCall()">←</button>
+    </div>
+    <span class="topbar-title">Hari Krishnan's Personal Room</span>
+    <div class="topbar-right">
+      <button class="tb-pill tb-layout-btn" onclick="toast('Layout changed')">
+        <svg class="ic" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        Layout
+      </button>
+      <button class="tb-pill blue" onclick="showMeetingInfo()">
+        <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="1" fill="currentColor" stroke="none"/><rect x="7" y="7.5" width="2" height="4.5" rx="1" fill="currentColor" stroke="none"/></svg>
+        Meeting info
+      </button>
+    </div>
+  </div>
+
+  <div class="workspace">
+    <!-- LEFT tile -->
+    <div class="user-tile" id="user-tile">
+      <video id="cam-video" autoplay muted playsinline></video>
+      <div class="user-tile-name" id="tile-name">Hari Krishnan</div>
+      <div class="user-tile-label" id="tile-label"><div class="live-dot"></div>Hari Krishnan</div>
+      <div class="float-box" id="float-box"></div>
+    </div>
+
+    <!-- RIGHT waiting -->
+    <div class="content-area">
+      <span class="waiting-text">Waiting for others to join…</span>
+      <button class="invite-btn" onclick="copyLink()">
+        <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="2.5"/><path d="M1 13c0-2.76 2.24-5 5-5" stroke-linecap="round"/><line x1="11" y1="8" x2="11" y2="14" stroke-linecap="round"/><line x1="8" y1="11" x2="14" y2="11" stroke-linecap="round"/></svg>
+        Invite people
+      </button>
+      <button class="copy-btn" onclick="copyLink()">
+        <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5.5" y="2" width="8" height="10" rx="1.2"/><rect x="2" y="4" width="8" height="10" rx="1.2" fill="var(--bg)"/></svg>
+        Copy meeting link
+      </button>
+    </div>
+
+    <!-- SIDE PANEL (desktop) -->
+    <div class="side-panel" id="side-panel">
+      <div class="sp-head">
+        <span class="sp-head-title" id="sp-title">Participants (1)</span>
+        <button class="sp-close" onclick="closePanel()">✕</button>
+      </div>
+      <div class="sp-body" id="sp-body"></div>
+      <div class="chat-input-row" id="chat-input-row">
+        <div class="chat-flex">
+          <input class="chat-field" id="chat-field" placeholder="Write a message…" onkeydown="chatKey(event)"/>
+          <button class="chat-send-btn" onclick="sendChat()"><svg width="14" height="14" viewBox="0 0 16 16" fill="white"><path d="M1 8L15 1l-4 14-3-5-7-2z"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="t-group">
+      <div class="t-row">
+        <button class="tool-pill st-off" id="mic-btn" onclick="toggleMic()">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0014 0"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+          <span class="pill-lbl" id="mic-lbl">Unmute</span>
+        </button>
+        <button class="caret-pill">▾</button>
+      </div>
+      <span class="t-icon-lbl" id="mic-icon-lbl">Unmute</span>
+    </div>
+
+    <div class="t-group">
+      <div class="t-row">
+        <button class="tool-pill st-off" id="cam-btn" onclick="toggleCam()">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          <span class="pill-lbl" id="cam-lbl">Start video</span>
+        </button>
+        <button class="caret-pill">▾</button>
+      </div>
+      <span class="t-icon-lbl" id="cam-icon-lbl">Video</span>
+    </div>
+
+    <div class="t-group">
+      <div class="t-row">
+        <button class="tool-pill" id="share-btn" onclick="toggleShare()">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <span class="pill-lbl">Share</span>
+        </button>
+      </div>
+      <span class="t-icon-lbl">Share</span>
+    </div>
+
+    <div class="t-group">
+      <div class="t-row">
+        <button class="tool-pill" id="hand-btn" onclick="toggleHand()">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 11V6a2 2 0 00-4 0v5M14 10V4a2 2 0 00-4 0v6M10 10.5V6a2 2 0 00-4 0v8a6 6 0 0012 0v-3a2 2 0 00-4 0"/></svg>
+          <span class="pill-lbl">Raise hand</span>
+        </button>
+      </div>
+      <span class="t-icon-lbl">Hand</span>
+    </div>
+
+    <div class="t-group">
+      <div class="t-row">
+        <button class="tool-pill" id="react-btn" onclick="toggleReact()">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          <span class="pill-lbl">React</span>
+        </button>
+      </div>
+      <span class="t-icon-lbl">React</span>
+    </div>
+
+    <div class="t-group">
+      <div class="t-row">
+        <button class="tool-pill" id="more-btn" onclick="toggleMore()">
+          <svg class="ic" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+        </button>
+      </div>
+      <span class="t-icon-lbl">More</span>
+    </div>
+
+    <div class="t-group">
+      <div class="t-row">
+        <button class="end-circle" onclick="endCall()">
+          <svg width="20" height="12" viewBox="0 0 28 16" fill="white"><path d="M27 10.5c0-1.5-2.3-3-6.5-3s-6.5 1.5-6.5 3c0 .55.35 1 .95 1.2l2.5 1c.58.22 1.25.04 1.55-.48l1.1-1.27a.6.6 0 01.65-.12l.35.15a.6.6 0 01.65-.1l1.3.69c.3.52.97.7 1.55.48l2.5-1C26.65 11.5 27 11.05 27 10.5z"/><path d="M1 10.5c0-1.5 2.3-3 6.5-3s6.5 1.5 6.5 3c0 .55-.35 1-.95 1.2l-2.5 1c-.58.22-1.25.04-1.55-.48L7.9 11c-.3-.52-.97-.7-1.55-.48l-2.5 1C3.27 11.74 3 12 3 12l-1.05-.5C1.35 11.5 1 11.05 1 10.5z" opacity=".3"/></svg>
+        </button>
+      </div>
+      <span class="t-icon-lbl" style="color:#f87171">End</span>
+    </div>
+
+    <div class="tb-right">
+      <button class="ic-btn" id="pax-icon" onclick="showParticipants()" title="Participants">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      </button>
+      <button class="ic-btn" id="chat-icon-btn" onclick="showChat()" title="Chat">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- REACTIONS POPUP -->
+<div class="popup" id="react-popup">
+  <div class="r-grid">
+    <button class="r-btn" onclick="sendReaction('👍')">👍</button>
+    <button class="r-btn" onclick="sendReaction('👏')">👏</button>
+    <button class="r-btn" onclick="sendReaction('🙌')">🙌</button>
+    <button class="r-btn" onclick="sendReaction('👎')">👎</button>
+    <button class="r-btn" onclick="sendReaction('😊')">😊</button>
+    <button class="r-btn" onclick="sendReaction('😆')">😆</button>
+    <button class="r-btn" onclick="sendReaction('😮')">😮</button>
+    <button class="r-btn" onclick="sendReaction('😟')">😟</button>
+    <button class="r-btn" onclick="sendReaction('🎉')">🎉</button>
+    <button class="r-btn" onclick="sendReaction('❤️')">❤️</button>
+    <button class="r-btn" onclick="sendReaction('✋')">✋</button>
+    <button class="r-btn" onclick="sendReaction('🔥')">🔥</button>
+  </div>
+  <div class="r-foot">Customize reaction shortcuts</div>
+</div>
+
+<!-- MORE MENU -->
+<div class="more-drop" id="more-drop">
+  <div class="m-tag">Meeting</div>
+  <div class="m-row" onclick="copyLink();closeMore()">
+    <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5.5" y="2" width="8" height="10" rx="1.2"/><rect x="2" y="4" width="8" height="10" rx="1.2" fill="var(--surface)"/></svg>
+    Copy meeting link
+  </div>
+  <div class="m-row" onclick="toast('Whiteboard opened');closeMore()">
+    <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="2" width="14" height="10" rx="1.2"/><line x1="4" y1="14" x2="12" y2="14" stroke-linecap="round"/></svg>
+    Start a new whiteboard
+  </div>
+  <div class="m-row" onclick="toggleLock()">
+    <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="7" width="10" height="8" rx="1.2"/><path d="M5 7V5a3 3 0 016 0v2" stroke-linecap="round"/></svg>
+    Lock meeting
+    <div class="tog-pill" id="lock-tog"><div class="tog-thumb"></div></div>
+  </div>
+  <div class="m-row" onclick="toggleBreakout()">
+    <svg class="ic" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+    Breakout sessions
+    <div class="tog-pill" id="breakout-tog"><div class="tog-thumb"></div></div>
+  </div>
+  <div class="m-row" id="mob-pax-row" style="display:none" onclick="showMobileSheet('pax');closeMore()">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+    Participants (1)
+  </div>
+  <div class="m-row" id="mob-chat-row" style="display:none" onclick="showMobileSheet('chat');closeMore()">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    Chat
+  </div>
+  <div class="m-row" onclick="toast('Report sent');closeMore()">
+    <svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 2l6 11H2L8 2z" stroke-linejoin="round"/><line x1="8" y1="7" x2="8" y2="10" stroke-linecap="round"/><circle cx="8" cy="12" r=".7" fill="currentColor" stroke="none"/></svg>
+    Report an issue
+  </div>
+</div>
+
+<!-- MOBILE SHEET -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()">
+  <div class="sheet-panel" onclick="event.stopPropagation()">
+    <div class="sheet-head">
+      <span class="sheet-title" id="sheet-title">Participants</span>
+      <button class="sheet-close" onclick="closeSheet()">✕</button>
+    </div>
+    <div class="sheet-body" id="sheet-body"></div>
+    <div class="sheet-chat-inp" id="sheet-chat-inp">
+      <div class="sheet-chat-flex">
+        <input class="chat-field" id="sheet-field" placeholder="Write a message…" onkeydown="sheetChatKey(event)"/>
+        <button class="chat-send-btn" onclick="sendSheetChat()"><svg width="14" height="14" viewBox="0 0 16 16" fill="white"><path d="M1 8L15 1l-4 14-3-5-7-2z"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast-el"></div>
+
+<div class="end-overlay" id="end-overlay">
+  <div class="end-box">
+    <h2>You've left the meeting</h2>
+    <p>Hari Krishnan's Personal Room</p>
+    <div class="end-actions">
+      <button class="rejoin-btn" onclick="rejoin()">Rejoin</button>
+      <button class="leave-btn" onclick="G('end-overlay').classList.remove('show')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const G=id=>document.getElementById(id);
+const isMob=()=>window.innerWidth<=680;
+let micOn=false,camOn=false,sharing=false,handRaised=false,lockOn=false,breakoutOn=false;
+let camStream=null,shareStream=null,currentPanel=null,chatMessages=[];
+
+/* INIT */
+window.addEventListener('load',()=>{
+  syncMobileUI();
+  if(isMob()){
+    G('premeeting').style.display='flex';
+    G('meeting').style.display='none';
+  } else {
+    G('premeeting').style.display='none';
+    G('meeting').style.display='flex';
+    reqPerms(); showParticipants();
+  }
+});
+window.addEventListener('resize', syncMobileUI);
+function syncMobileUI(){
+  const m=isMob();
+  G('mob-back').style.display=m?'block':'none';
+  G('mob-pax-row').style.display=m?'flex':'none';
+  G('mob-chat-row').style.display=m?'flex':'none';
+}
+
+/* TOAST */
+let _tt;
+function toast(msg){const t=G('toast-el');t.textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2400)}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+/* PRE-MEETING */
+let pmMic=false,pmCam=false,pmStream=null;
+function pmToggleMic(){
+  pmMic=!pmMic;
+  const b=G('pm-mic'),l=G('pm-mic-lbl');
+  b.className='pm-toggle-btn '+(pmMic?'st-on':'st-off');
+  b.querySelector('svg').setAttribute('stroke',pmMic?'#4ade80':'#f87171');
+  l.textContent=pmMic?'Mute':'Unmute';
+}
+async function pmToggleCam(){
+  pmCam=!pmCam;
+  const b=G('pm-cam'),l=G('pm-cam-lbl');
+  b.className='pm-toggle-btn '+(pmCam?'st-on':'st-off');
+  b.querySelector('svg').setAttribute('stroke',pmCam?'#4ade80':'#f87171');
+  l.textContent=pmCam?'Stop video':'Start video';
+  if(pmCam){
+    try{
+      pmStream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+      const v=G('pm-video');v.srcObject=pmStream;v.style.display='block';G('pm-av').style.display='none';
+    }catch(e){pmCam=false;b.className='pm-toggle-btn st-off';l.textContent='Start video'}
+  } else {
+    if(pmStream){pmStream.getTracks().forEach(t=>t.stop());pmStream=null}
+    G('pm-video').style.display='none';G('pm-av').style.display='flex';
+  }
+}
+function goBack(){toast('Going back…')}
+function joinMeeting(){
+  if(pmStream){pmStream.getTracks().forEach(t=>t.stop());pmStream=null}
+  G('premeeting').style.display='none';
+  G('meeting').style.display='flex';
+  micOn=pmMic;camOn=false;updMic();updCam();
+  toast('Joined — video off');
+}
+
+/* PERMS */
+async function reqPerms(){
+  try{
+    camStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+    const v=G('cam-video');v.srcObject=camStream;v.classList.add('live');
+    G('tile-name').style.display='none';G('tile-label').classList.add('show');
+    camOn=true;micOn=true;updCam();updMic();
+  }catch(e){}
+}
+
+/* MIC */
+function toggleMic(){
+  if(!camStream){reqPerms();return}
+  micOn=!micOn;camStream.getAudioTracks().forEach(t=>t.enabled=micOn);
+  updMic();toast(micOn?'Microphone on':'Muted');
+}
+function updMic(){
+  G('mic-lbl').textContent=micOn?'Mute':'Unmute';
+  G('mic-icon-lbl').textContent=micOn?'Mute':'Unmute';
+  G('mic-btn').className='tool-pill '+(micOn?'st-on':'st-off');
+}
+
+/* CAMERA */
+function toggleCam(){
+  if(!camStream){reqPerms();return}
+  camOn=!camOn;camStream.getVideoTracks().forEach(t=>t.enabled=camOn);
+  G('cam-video').style.display=camOn?'block':'none';
+  G('tile-name').style.display=camOn?'none':'flex';
+  G('tile-label').classList.toggle('show',camOn);
+  updCam();toast(camOn?'Video on':'Video off');
+}
+function updCam(){
+  G('cam-lbl').textContent=camOn?'Stop video':'Start video';
+  G('cam-icon-lbl').textContent=camOn?'Stop':'Video';
+  G('cam-btn').className='tool-pill '+(camOn?'st-on':'st-off');
+}
+
+/* SHARE */
+async function toggleShare(){
+  if(!sharing){
+    try{
+      shareStream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
+      sharing=true;
+      const v=G('cam-video');v.srcObject=shareStream;v.classList.add('live');v.style.display='block';
+      G('tile-name').style.display='none';G('tile-label').classList.add('show');
+      G('share-btn').className='tool-pill st-on';
+      shareStream.getVideoTracks()[0].onended=stopShare;
+      toast('Sharing screen');
+    }catch(e){toast('Share cancelled')}
+  } else stopShare();
+}
+function stopShare(){
+  sharing=false;
+  if(shareStream){shareStream.getTracks().forEach(t=>t.stop());shareStream=null}
+  G('share-btn').className='tool-pill';
+  const v=G('cam-video');
+  if(camStream&&camOn){v.srcObject=camStream;v.style.display='block'}
+  else{v.style.display='none';G('tile-name').style.display='flex';G('tile-label').classList.remove('show')}
+  toast('Screen sharing stopped');
+}
+
+/* HAND */
+function toggleHand(){
+  handRaised=!handRaised;
+  G('hand-btn').className='tool-pill '+(handRaised?'st-amb':'');
+  if(handRaised){sendReaction('✋');toast('Hand raised')} else toast('Hand lowered');
+}
+
+/* REACTIONS */
+function toggleReact(){
+  const rp=G('react-popup');
+  const open=!rp.classList.contains('open');
+  rp.classList.toggle('open');
+  G('more-drop').classList.remove('open');
+  if(open) positionPopup(rp, G('react-btn'));
+}
+function sendReaction(emoji){
+  G('react-popup').classList.remove('open');
+  const c=G('float-box');
+  const s=document.createElement('span');
+  s.className='float-em';s.textContent=emoji;s.style.left=(Math.random()*120)+'px';
+  c.appendChild(s);setTimeout(()=>s.remove(),2500);
+}
+
+/* MORE */
+function toggleMore(){
+  const mm=G('more-drop');
+  const open=!mm.classList.contains('open');
+  mm.classList.toggle('open');
+  G('react-popup').classList.remove('open');
+  if(open && !isMob()) positionDropUp(mm, G('more-btn'));
+}
+function closeMore(){G('more-drop').classList.remove('open')}
+function positionPopup(el,anchor){
+  if(isMob())return; // CSS handles it
+  const r=anchor.getBoundingClientRect();
+  el.style.left=Math.max(8,r.left-80)+'px';el.style.right='auto';
+  el.style.bottom=(window.innerHeight-r.top+8)+'px';el.style.top='auto';
+}
+function positionDropUp(el,anchor){
+  if(isMob())return;
+  const r=anchor.getBoundingClientRect();
+  el.style.left=Math.max(8,r.left-60)+'px';el.style.right='auto';
+  el.style.bottom=(window.innerHeight-r.top+8)+'px';el.style.top='auto';
+}
+function toggleLock(){lockOn=!lockOn;G('lock-tog').className='tog-pill '+(lockOn?'on':'');toast(lockOn?'Meeting locked':'Unlocked')}
+function toggleBreakout(){breakoutOn=!breakoutOn;G('breakout-tog').className='tog-pill '+(breakoutOn?'on':'');toast(breakoutOn?'Breakout enabled':'Disabled')}
+
+/* PANELS */
+function showParticipants(){
+  if(currentPanel==='pax'){closePanel();return}
+  currentPanel='pax';G('side-panel').classList.add('open');
+  G('pax-icon').classList.add('active');G('chat-icon-btn').classList.remove('active');
+  G('sp-title').textContent='Participants (1)';G('chat-input-row').style.display='none';
+  G('sp-body').innerHTML=`<div class="sec-tag">In the meeting (1)</div><div class="pax-row"><div class="pax-av">HK</div><div><div class="pax-name">Hari Krishnan</div><div class="pax-role">Host · presenter · me</div></div></div>`;
+}
+function showChat(){
+  if(currentPanel==='chat'){closePanel();return}
+  currentPanel='chat';G('side-panel').classList.add('open');
+  G('chat-icon-btn').classList.add('active');G('pax-icon').classList.remove('active');
+  G('sp-title').textContent='Chat';G('chat-input-row').style.display='block';
+  renderChat();setTimeout(()=>G('chat-field').focus(),50);
+}
+function renderChat(){
+  let h=`<div class="chat-note">Messages saved after the meeting.</div>`;
+  if(!chatMessages.length){h+=`<div class="chat-empty"><div class="chat-empty-ico">💬</div><div class="chat-empty-h">No messages yet</div><div class="chat-empty-s">Start with a message or a reaction.</div></div>`}
+  else{h+=`<div class="chat-msgs">`+chatMessages.map(m=>`<div class="chat-msg"><div class="chat-msg-from">${m.sender}</div><div class="chat-msg-body">${esc(m.text)}</div></div>`).join('')+`</div>`}
+  G('sp-body').innerHTML=h;G('sp-body').scrollTop=99999;
+}
+function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()}}
+function sendChat(){const f=G('chat-field'),v=f.value.trim();if(!v)return;chatMessages.push({sender:'Hari Krishnan',text:v});f.value='';renderChat()}
+function closePanel(){currentPanel=null;G('side-panel').classList.remove('open');G('pax-icon').classList.remove('active');G('chat-icon-btn').classList.remove('active')}
+
+/* MOBILE SHEET */
+function showMobileSheet(type){
+  G('sheet-overlay').classList.add('open');
+  if(type==='pax'){
+    G('sheet-title').textContent='Participants (1)';G('sheet-chat-inp').style.display='none';
+    G('sheet-body').innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:6px 0"><div class="pax-av">HK</div><div><div class="pax-name">Hari Krishnan</div><div class="pax-role">Host · presenter · me</div></div></div>`;
+  } else {
+    G('sheet-title').textContent='Chat';G('sheet-chat-inp').style.display='block';
+    let h=`<div class="chat-note" style="margin:0 0 10px">Messages saved after the meeting.</div>`;
+    if(!chatMessages.length)h+=`<div class="chat-empty"><div class="chat-empty-ico">💬</div><div class="chat-empty-h">No messages yet</div></div>`;
+    else h+=chatMessages.map(m=>`<div class="chat-msg" style="margin-bottom:8px"><div class="chat-msg-from">${m.sender}</div><div class="chat-msg-body">${esc(m.text)}</div></div>`).join('');
+    G('sheet-body').innerHTML=h;
+  }
+}
+function closeSheet(){G('sheet-overlay').classList.remove('open')}
+function sheetChatKey(e){if(e.key==='Enter'){e.preventDefault();sendSheetChat()}}
+function sendSheetChat(){const f=G('sheet-field'),v=f.value.trim();if(!v)return;chatMessages.push({sender:'Hari Krishnan',text:v});f.value='';showMobileSheet('chat')}
+
+/* COPY / INFO */
+function copyLink(){const url='https://meet.webex.com/pr26444105095';if(navigator.clipboard)navigator.clipboard.writeText(url).then(()=>toast('Link copied!'));else toast('Link copied!')}
+function showMeetingInfo(){alert("Hari Krishnan's Personal Room\n\nMeeting: 2644 410 5095\nLink: https://meet.webex.com/pr26444105095")}
+
+/* END */
+function endCall(){
+  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}
+  if(shareStream){shareStream.getTracks().forEach(t=>t.stop());shareStream=null}
+  camOn=false;micOn=false;sharing=false;handRaised=false;updMic();updCam();
+  const v=G('cam-video');v.srcObject=null;v.style.display='none';v.classList.remove('live');
+  G('tile-name').style.display='flex';G('tile-label').classList.remove('show');
+  G('share-btn').className='tool-pill';G('hand-btn').className='tool-pill';
+  G('end-overlay').classList.add('show');
+}
+function rejoin(){G('end-overlay').classList.remove('show');reqPerms()}
+
+/* CLOSE ON OUTSIDE CLICK */
+document.addEventListener('click',e=>{
+  const rp=G('react-popup'),mm=G('more-drop');
+  if(!rp.contains(e.target)&&!G('react-btn').contains(e.target))rp.classList.remove('open');
+  if(!mm.contains(e.target)&&!G('more-btn').contains(e.target))mm.classList.remove('open');
+});
+</script>
+</body>
+</html>

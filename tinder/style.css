@@ -1,0 +1,49 @@
+/* --- Camera Layout Enhancements --- */
+#camera-screen {
+    background: #000;
+}
+
+.camera-viewfinder {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+
+#camera-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+}
+
+/* Glassmorphism for Camera UI */
+.cam-opt-btn, .cam-close-btn, .cam-flip-btn {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Flash Animation */
+@keyframes cameraFlash {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.flash-active {
+    animation: cameraFlash 0.15s ease-out;
+}
+
+/* Filter Effects (applied via JS) */
+.filter-warm { filter: sepia(0.3) saturate(1.4) hue-rotate(-10deg); }
+.filter-cool { filter: hue-rotate(180deg) saturate(1.2); }
+.filter-vivid { filter: contrast(1.2) saturate(1.6); }
+.filter-mono { filter: grayscale(1); }
+.filter-fade { filter: opacity(0.8) contrast(0.8) brightness(1.2); }
