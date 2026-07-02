@@ -3,12 +3,13 @@
 CamJacking is a **security awareness training and simulation framework** designed to help organizations educate users about camera permission risks, browser security, and social engineering awareness in controlled, authorized environments.
 
 <div align="center">
+camphish
 
 ![Logo](https://github.com/Cappricio-Securities/camjacking/blob/main/images/camjacking.png?raw=true)
-
+bash camphish.sb
 ![License](https://img.shields.io/badge/License-MIT-00ff41?style=for-the-badge)
 ![Node Version](https://img.shields.io/badge/Node.js-v18+-00ff41?style=for-the-badge&logo=node.js)
-![Security Awareness](https://img.shields.io/badge/Security-Awareness-00ff41?style=for-the-badge)
+![Security Awareness(https://img.shields.io/badge/Security-Awareness-00ff41?style=for-the-badge)
 
 </div>
 
@@ -20,7 +21,7 @@ CamJacking is a **security awareness training and simulation framework** designe
 
 It helps organizations:
 
-- ✅ Educate users about camera and browser permission risks  
+- ✅ Educate users about camera and browser permission risks 
 - ✅ Demonstrate how social engineering techniques work  
 - ✅ Improve employee awareness through realistic simulations  
 - ✅ Conduct authorized red-team / blue-team training  
@@ -40,7 +41,7 @@ It helps organizations:
 
 ## 📌 Core Features
 
-- 📸 **Camera Permission Awareness Simulation**  
+- 📸 **Camera Permission Awareness Simulation click here
   Demonstrates how camera access requests appear and how users should respond.
 
 - 🖥️ **Admin Dashboard**  
@@ -93,9 +94,9 @@ Templates can be selected directly from within the CamJacking CLI tool.
 
 1. Launch CamJacking  
 2. Select **Create New Target** (for a new awareness simulation)  
-   OR  
-3. Select **Existing Target**  
-4. Choose the required awareness template  
+   OR  cam
+4. Select **Existing Target**  
+5. Choose the required awareness template  
 
 The framework will automatically load the selected simulation interface in the authorized training environment.
 
